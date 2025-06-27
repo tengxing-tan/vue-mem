@@ -1,0 +1,13 @@
+{
+  "name": "Vue Mem",
+  "icons": [
+    {
+      "sizes": "192x192",
+      "src": "/assets/logo-512.png",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "prefer_related_applications": false
+}
