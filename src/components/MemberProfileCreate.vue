@@ -21,7 +21,7 @@ const form = ref({ ...emptyForm, phoneNo: props.phoneNo })
 
 <template>
   <form @submit.prevent="$emit('create', form)">
-    <input v-model="form.name" placeholder="Name" />
+    <input v-model="form.name" placeholder="Name" :autofocus="true" />
     <input v-model="form.phoneNo" placeholder="Phone Number" />
     <input v-model="form.points" type="number" placeholder="Points" />
     <button type="submit">Create</button>
