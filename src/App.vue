@@ -16,7 +16,7 @@ import HelloWorld from './components/HelloWorld.vue'
 
         <!-- Member -->
         <RouterLink to="/memberList">Member List</RouterLink>
-        <RouterLink to="/editMember">Edit Member</RouterLink>
+        <RouterLink to="/memberEdit">Edit Member</RouterLink>
 
         <!-- Reward -->
         <RouterLink to="/claimReward">Claim Reward</RouterLink>

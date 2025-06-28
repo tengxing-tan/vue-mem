@@ -6,7 +6,8 @@ export function useMemberStore() {
   const members = ref<MemberModel[]>([])
   const loading = ref<boolean>(true)
   const creating = ref<boolean>(false)
-  const editing = ref<boolean>(false)
+  const selection = ref<string[]>([])
+  const selectingMember = ref<MemberModel | null>(null)
 
   const loadMembers = async (): Promise<void> => {
     loading.value = true
@@ -38,7 +39,17 @@ export function useMemberStore() {
     await loadMembers()
   }
 
-  const editingMember = ref<MemberModel | null>(null)
+  const removeSelectedMembers = async (): Promise<void> => {
+    if (selection.value.length === 0) {
+      return
+    }
+
+    for (const id of selection.value) {
+      await deleteMember(id)
+    }
+    selection.value = []
+    await loadMembers()
+  }
 
   onMounted(() => {
     loadMembers()
@@ -50,8 +61,9 @@ export function useMemberStore() {
     loadMembers,
     creating,
     saveMember,
-    editing,
-    editingMember,
+    selectingMember,
     removeMember,
+    selection,
+    removeSelectedMembers,
   }
 }
