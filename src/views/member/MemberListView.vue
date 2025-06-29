@@ -46,7 +46,9 @@ const onSubmit = async () => {
 const handleCreateOrUpdateMember = async (formValue: MemberModel) => {
   await saveMember(formValue)
   clearForm()
-  selectingMember.value = formValue
+  if (formValue.id !== '') {
+    selectingMember.value = formValue
+  }
 }
 
 const handleRemoveMember = (id: string) => {
