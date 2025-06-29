@@ -122,7 +122,10 @@ const filtered = (members: MemberModel[]) => {
     <input type="checkbox" @click="handleSelectAll" :checked="selection.length > 0" />
     <button @click="removeSelectedMembers">Remove selected</button>
     <ul>
-      <li v-for="member in filtered(members)" :key="member.id">
+      <li
+        v-for="member in filtered(members).sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1))"
+        :key="member.id"
+      >
         <div>
           <input
             type="checkbox"
@@ -131,7 +134,7 @@ const filtered = (members: MemberModel[]) => {
           />
           <span @click="selectingMember = member" style="cursor: pointer">{{ member.name }}</span>
           — {{ member.points }} pts. createdAt
-          {{ new Date(member.createdAt).toLocaleString() }}
+          {{ new Date(member.createdAt).toLocaleString('en-MY') }}
         </div>
       </li>
     </ul>

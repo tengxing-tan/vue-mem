@@ -5,7 +5,6 @@ import { dbPromise } from './db'
 export const addOrUpdateMember = async (member: MemberModel): Promise<void> => {
   try {
     const isMemberExists = member.id.length !== 0 && (await dbPromise.get('members', member.id))
-    member.updatedAt = new Date()
 
     await dbPromise.put(
       'members',
@@ -13,7 +12,7 @@ export const addOrUpdateMember = async (member: MemberModel): Promise<void> => {
         JSON.stringify({
           ...member,
           id: member.id || crypto.randomUUID(),
-          createdAt: !isMemberExists || new Date(),
+          createdAt: !isMemberExists ? new Date() : member.createdAt,
           updatedAt: new Date(),
         }),
       ),
