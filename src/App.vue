@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+import PwaInstallButton from './components/PwaInstallButton.vue'
 </script>
 
 <template>
@@ -11,15 +12,15 @@ import HelloWorld from './components/HelloWorld.vue'
       <HelloWorld msg="You did it!" />
 
       <nav>
+        <PwaInstallButton />
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
 
         <!-- Member -->
         <RouterLink to="/memberList">Member List</RouterLink>
-        <RouterLink to="/memberEdit">Edit Member</RouterLink>
 
         <!-- Reward -->
-        <RouterLink to="/claimReward">Claim Reward</RouterLink>
+        <!-- <RouterLink to="/claimReward">Claim Reward</RouterLink> -->
       </nav>
     </div>
   </header>
