@@ -147,9 +147,11 @@ const filtered = (members: MemberModel[]) => {
       <div class="center-card">
         <div class="input-group">
           <input class="" type="text" v-model="form.phoneNo" placeholder="Phone number" />
-          <button type="button" @click="clearForm">x</button>
-          <button class="submit-btn" type="submit">
-            <img src="@/assets/send.svg" alt="Send" style="width: 24px; height: 24px" />
+          <button class="btn" v-if="form.phoneNo" type="button" @click="clearForm">
+            <i class="ri-close-line"></i>
+          </button>
+          <button class="btn" type="submit" @click="onSubmit">
+            <i class="ri-search-line"></i>
           </button>
         </div>
       </div>
@@ -158,34 +160,9 @@ const filtered = (members: MemberModel[]) => {
 </template>
 
 <style scoped>
-.input-group {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.5rem;
-  width: 100%;
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
-  font-family: inherit;
-  color: #2c3e50;
-  background-color: #ffffff;
-  border: 2px solid #dcdfe6;
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease-in-out;
-}
-.input-group:focus-within {
-  border-color: #42b983;
-  box-shadow: 0 0 0 3px rgba(66, 185, 131, 0.2);
-}
-.input-group input {
+input[type='text'] {
   width: 100%;
   border: none;
-}
-.input-group input:focus {
-  outline: none;
-}
-.input-group input::placeholder {
-  color: #a0aec0;
 }
 .center-card {
   display: grid;
@@ -194,10 +171,5 @@ const filtered = (members: MemberModel[]) => {
   min-height: 60vh;
   margin: 0 auto;
   padding: 1rem;
-}
-.submit-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
 }
 </style>
