@@ -2,9 +2,9 @@
 import { ref } from 'vue'
 import { useMemberStore } from '@/composables/useMemberStore'
 import type { MemberModel } from '@/models/member.model'
-import MemberProfile from '@/components/MemberProfile.vue'
-import MemberProfileEdit from '@/components/MemberProfileEdit.vue'
-import MemberProfileCreate from '@/components/MemberProfileCreate.vue'
+import MemberProfile from '@/views/member/MemberProfile.vue'
+import MemberProfileEdit from '@/views/member/MemberProfileEdit.vue'
+import MemberProfileCreate from '@/views/member/MemberProfileCreate.vue'
 
 const {
   members,
@@ -107,13 +107,15 @@ const filtered = (members: MemberModel[]) => {
 
   <MemberProfileCreate
     v-if="creating"
-    @create="(formValue) => handleCreateOrUpdateMember(formValue)"
+    @create="(formValue: MemberModel) => handleCreateOrUpdateMember(formValue)"
     :phone-no="form.phoneNo"
   />
 
   <MemberProfileEdit
     v-if="editing && selectingMember"
-    @update="(formValue) => handleCreateOrUpdateMember({ ...selectingMember, ...formValue })"
+    @update="
+      (formValue: MemberModel) => handleCreateOrUpdateMember({ ...selectingMember, ...formValue })
+    "
     @cancel="editing = false"
     :member="selectingMember"
   />
