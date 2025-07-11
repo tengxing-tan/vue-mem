@@ -1,5 +1,10 @@
 import type { MemberModel } from '@/models/member.model'
-import { addOrUpdateMember, deleteMember, getAllMembers } from '@/services/member.service'
+import {
+  addOrUpdateMember,
+  deleteMember,
+  getAllMembers,
+  getMember,
+} from '@/services/member.service'
 import { ref, onMounted } from 'vue'
 
 export function useMemberStore() {
@@ -7,11 +12,14 @@ export function useMemberStore() {
   const loading = ref<boolean>(true)
   const creating = ref<boolean>(false)
   const selection = ref<string[]>([])
-  const selectingMember = ref<MemberModel | null>(null)
+  const member = ref<MemberModel | null>(null)
 
   const loadMembers = async (): Promise<void> => {
     loading.value = true
-    members.value = await getAllMembers()
+    if (members.value.length === 0) {
+      members.value = await getAllMembers()
+    }
+
     loading.value = false
   }
 
@@ -34,6 +42,10 @@ export function useMemberStore() {
     creating.value = false
   }
 
+  const getMemberById = async (id: string): Promise<MemberModel | undefined> => {
+    return await getMember(id)
+  }
+
   const removeMember = async (id: string): Promise<void> => {
     await deleteMember(id)
     await loadMembers()
@@ -51,17 +63,14 @@ export function useMemberStore() {
     await loadMembers()
   }
 
-  onMounted(() => {
-    loadMembers()
-  })
-
   return {
+    member,
     members,
     loading,
     loadMembers,
     creating,
     saveMember,
-    selectingMember,
+    getMemberById,
     removeMember,
     selection,
     removeSelectedMembers,

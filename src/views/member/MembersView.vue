@@ -1,22 +1,23 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useMemberStore } from '@/composables/useMemberStore'
 import type { MemberModel } from '@/models/member.model'
-import MemberProfile from '@/views/member/MemberProfile.vue'
 import MemberProfileEdit from '@/views/member/MemberProfileEdit.vue'
 import MemberProfileCreate from '@/views/member/MemberProfileCreate.vue'
+import MemberProfileView from './MemberProfileView.vue'
 
 const {
+  member,
   members,
+  loadMembers,
   saveMember,
   creating,
-  selectingMember,
   selection,
   removeMember,
   removeSelectedMembers,
 } = useMemberStore()
 
-const emptyForm: MemberModel = {
+const initMemberForm: MemberModel = {
   id: '',
   name: '',
   phoneNo: '',
@@ -26,20 +27,24 @@ const emptyForm: MemberModel = {
   updatedAt: new Date(),
 }
 
-const form = ref({ ...emptyForm })
+const form = ref({ ...initMemberForm })
 const editing = ref(false)
 
-const onSubmit = async () => {
+onMounted(() => {
+  loadMembers()
+})
+
+const onSubmit = () => {
   if (form.value.phoneNo.length === 0) {
     return
   }
 
-  const existingMember = filtered(members.value)
+  const queryMembers = filtered(members.value)
 
-  if (existingMember.length === 1) {
-    selectingMember.value = existingMember[0]
-  } else if (existingMember.length === 0) {
-    creating.value = true
+  if (queryMembers.length === 1) {
+    handleCrudState(false, queryMembers[0], true)
+  } else if (queryMembers.length === 0) {
+    handleCrudState(true)
   }
 }
 
@@ -47,7 +52,7 @@ const handleCreateOrUpdateMember = async (formValue: MemberModel) => {
   await saveMember(formValue)
   clearForm()
   if (formValue.id !== '') {
-    selectingMember.value = formValue
+    handleCrudState(false, formValue, false)
   }
 }
 
@@ -58,10 +63,8 @@ const handleRemoveMember = (id: string) => {
 }
 
 const clearForm = () => {
-  form.value = { ...emptyForm }
-  selectingMember.value = null
-  creating.value = false
-  editing.value = false
+  form.value = { ...initMemberForm }
+  handleCrudState(false, null, false)
 }
 
 const handleSelection = (memberId: string, event: Event) => {
@@ -94,17 +97,15 @@ const filtered = (members: MemberModel[]) => {
       )
     : members
 }
+
+function handleCrudState(create?: boolean, read?: MemberModel | null, update?: boolean) {
+  creating.value = create || false
+  member.value = read || null
+  editing.value = update || false
+}
 </script>
 
 <template>
-  <MemberProfile
-    v-if="selectingMember && !editing"
-    @edit="editing = true"
-    @remove="handleRemoveMember(selectingMember.id)"
-    @cancel="clearForm"
-    :member="selectingMember"
-  />
-
   <MemberProfileCreate
     v-if="creating"
     @create="(formValue: MemberModel) => handleCreateOrUpdateMember(formValue)"
@@ -112,34 +113,37 @@ const filtered = (members: MemberModel[]) => {
   />
 
   <MemberProfileEdit
-    v-if="editing && selectingMember"
-    @update="
-      (formValue: MemberModel) => handleCreateOrUpdateMember({ ...selectingMember, ...formValue })
-    "
+    v-if="editing && member"
+    @update="(formValue: MemberModel) => handleCreateOrUpdateMember({ ...member, ...formValue })"
     @cancel="editing = false"
-    :member="selectingMember"
+    :member="member"
   />
 
-  <div v-else-if="!selectingMember && !creating">
+  <div v-else-if="!member && !creating">
     <input type="checkbox" @click="handleSelectAll" :checked="selection.length > 0" />
     <button @click="removeSelectedMembers">Remove selected</button>
     <ul>
       <li
-        v-for="member in filtered(members).sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1))"
-        :key="member.id"
+        v-for="itemMember in filtered(members).sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1))"
+        :key="itemMember.id"
       >
         <div>
           <input
             type="checkbox"
             name="memberCheckbox"
-            @click="handleSelection(member.id, $event)"
+            @click="handleSelection(itemMember.id, $event)"
           />
-          <span @click="selectingMember = member" style="cursor: pointer">{{ member.name }}</span>
-          — {{ member.points }} pts. createdAt
-          {{ new Date(member.createdAt).toLocaleString('en-MY') }}
+          <span @click="member = itemMember" style="cursor: pointer">{{ itemMember.name }}</span>
+          — {{ itemMember.points }} pts. createdAt
+          {{ new Date(itemMember.createdAt).toLocaleString('en-MY') }}
+          <router-link :to="{ name: 'memberProfileView', params: { id: itemMember.id } }"
+            >view</router-link
+          >
         </div>
       </li>
     </ul>
+    <router-view />
+
     <form @submit.prevent="onSubmit">
       <div v-if="creating">
         <input type="text" v-model="form.name" placeholder="Member Name" />

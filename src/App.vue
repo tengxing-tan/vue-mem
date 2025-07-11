@@ -17,7 +17,7 @@ import PwaInstallButton from './components/PwaInstallButton.vue'
         <RouterLink to="/about">About</RouterLink>
 
         <!-- Member -->
-        <RouterLink to="/memberList">Member List</RouterLink>
+        <RouterLink to="/members">Member List</RouterLink>
 
         <!-- Reward -->
         <!-- <RouterLink to="/claimReward">Claim Reward</RouterLink> -->

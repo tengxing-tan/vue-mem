@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { memberRoutes } from './member.route'
 
 const routes = [
   {
@@ -14,12 +15,7 @@ const routes = [
     meta: { title: 'About' },
     component: () => import('../views/AboutView.vue'),
   },
-  {
-    path: '/memberList',
-    name: 'memberList',
-    meta: { title: 'Member List' },
-    component: () => import('../views/member/MemberListView.vue'),
-  },
+  ...memberRoutes,
 ]
 
 const router = createRouter({
