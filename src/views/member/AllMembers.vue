@@ -2,11 +2,11 @@
 import AppBadge from '@/components/AppBadge.vue'
 import Button from '@/components/AppButton.vue'
 import AppTable from '@/components/AppTable.vue'
-import { useJsonDataStore } from '@/composables/useJsonDataStore'
+// import { useJsonDataStore } from '@/composables/useJsonDataStore'
 import { useMemberInitStore } from '@/composables/useMemberStore'
 
 const { members } = useMemberInitStore()
-const { getAllMembersInJson } = useJsonDataStore()
+// const { getAllMembersInJson } = useJsonDataStore()
 const headers = ['Name', 'Phone No', 'Points']
 // const rows = members.map(member => ({
 //   name: member.name,

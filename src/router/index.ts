@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import { memberRoutes } from './member.route'
 import AllMembers from '@/views/member/AllMembers.vue'
 

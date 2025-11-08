@@ -1,10 +1,5 @@
 import type { MemberModel } from '@/models/member.model'
-import {
-  addOrUpdateMember,
-  deleteMember,
-  getAllMembers,
-  getMember,
-} from '@/services/member.service'
+import { addOrUpdateMember, deleteMember, getAllMembers } from '@/services/member.service'
 import { ref, onMounted } from 'vue'
 
 export function useMemberInitStore() {
