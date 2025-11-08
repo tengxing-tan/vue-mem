@@ -1,22 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { memberRoutes } from './member.route'
+import AllMembers from '@/views/member/AllMembers.vue'
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView,
+    meta: { title: 'Home' },
+    component: AllMembers,
   },
-  {
-    path: '/about',
-    name: 'about',
-    component: () => import('../views/AboutView.vue'),
-  },
-  {
-    path: '/memberList',
-    name: 'memberList',
-    component: () => import('../views/member/MemberListView.vue'),
-  },
+  ...memberRoutes,
 ]
 
 const router = createRouter({

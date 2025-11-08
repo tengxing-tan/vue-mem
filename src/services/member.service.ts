@@ -2,24 +2,21 @@
 
 import type { MemberModel } from '@/models/member.model'
 import { dbPromise } from './db'
-export const addOrUpdateMember = async (member: MemberModel): Promise<void> => {
+export const addOrUpdateMember = async (member: MemberModel, isNew: boolean): Promise<void> => {
   try {
-    const isMemberExists = member.id.length !== 0 && (await dbPromise.get('members', member.id))
-    member.updatedAt = new Date()
-
     await dbPromise.put(
       'members',
       JSON.parse(
         JSON.stringify({
           ...member,
-          id: member.id || crypto.randomUUID(),
-          createdAt: !isMemberExists || new Date(),
+          createdAt: isNew ? new Date() : member.createdAt,
           updatedAt: new Date(),
+          isDeleted: member.isDeleted || false,
         }),
       ),
     )
   } catch (error) {
-    console.log('Failed to add or update member:', error)
+    alert('Failed to add or update member:' + error)
     throw error
   }
 }
