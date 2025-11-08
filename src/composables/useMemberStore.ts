@@ -7,72 +7,73 @@ import {
 } from '@/services/member.service'
 import { ref, onMounted } from 'vue'
 
-export function useMemberStore() {
+export function useMemberInitStore() {
   const members = ref<MemberModel[]>([])
-  const loading = ref<boolean>(true)
-  const creating = ref<boolean>(false)
-  const selection = ref<string[]>([])
-  const member = ref<MemberModel | null>(null)
 
-  const loadMembers = async (): Promise<void> => {
-    loading.value = true
-    if (members.value.length === 0) {
-      members.value = await getAllMembers()
+  onMounted(() => {
+    getAllMembers().then((membersData) => (members.value = membersData))
+  })
+
+  return { members }
+}
+
+export function useMemberGetStore() {
+  const member = ref<MemberModel | undefined>()
+  const members = ref<MemberModel[]>()
+  const phoneNoSearchKey = ref<string>('')
+
+  const setPhoneNoSearchKey = (phoneNo: string) => {
+    phoneNoSearchKey.value = phoneNo
+  }
+
+  const getMemberByPhoneNo = (phoneNo: string): MemberModel | undefined => {
+    return members.value?.find((member) => member.phoneNo === phoneNo)
+  }
+
+  onMounted(async (): Promise<void> => {
+    members.value = await getAllMembers()
+    member.value = getMemberByPhoneNo(phoneNoSearchKey.value)
+  })
+
+  return { member, getMemberByPhoneNo, setPhoneNoSearchKey }
+}
+
+export function useMemberAddOrUpdateStore() {
+  const { getMemberByPhoneNo } = useMemberGetStore()
+
+  const handleUpdateMember = async (updateMember: MemberModel) => {
+    if (!getMemberByPhoneNo(updateMember.phoneNo)) {
+      alert('Member does not exist: ' + updateMember.phoneNo)
     }
 
-    loading.value = false
+    await addOrUpdateMember(updateMember, false)
   }
 
-  const saveMember = async (member: MemberModel): Promise<void> => {
-    // if (!phoneNoValidator(member.phoneNo)) {
-    //   alert('Phone number should be like 0123456789')
-    //   return
-    // }
+  const handleCreateMember = async (newMember: MemberModel) => {
+    if (newMember.phoneNo.trim() === '') return
+    await addOrUpdateMember(newMember, true)
+  }
 
-    if (
-      member.id.length === 0 &&
-      members.value.some((m: MemberModel) => m.phoneNo === member.phoneNo)
-    ) {
-      alert('Member with this phone number already exists')
-      return
+  return { handleUpdateMember, handleCreateMember }
+}
+
+export function useMemberDeleteStore() {
+  const { getMemberByPhoneNo } = useMemberGetStore()
+
+  const { handleUpdateMember } = useMemberAddOrUpdateStore()
+  const handleDeleteMember = async (phoneNo: string) => {
+    const member = getMemberByPhoneNo(phoneNo)
+    if (member) {
+      handleUpdateMember({ ...member, isDeleted: true })
     }
-
-    await addOrUpdateMember(member)
-    await loadMembers()
-    creating.value = false
   }
 
-  const getMemberById = async (id: string): Promise<MemberModel | undefined> => {
-    return await getMember(id)
-  }
-
-  const removeMember = async (id: string): Promise<void> => {
-    await deleteMember(id)
-    await loadMembers()
-  }
-
-  const removeSelectedMembers = async (): Promise<void> => {
-    if (selection.value.length === 0) {
-      return
+  const deleteMemberPermanently = async (phoneNo: string) => {
+    const member = getMemberByPhoneNo(phoneNo)
+    if (member) {
+      await deleteMember(member.phoneNo)
     }
-
-    for (const id of selection.value) {
-      await deleteMember(id)
-    }
-    selection.value = []
-    await loadMembers()
   }
 
-  return {
-    member,
-    members,
-    loading,
-    loadMembers,
-    creating,
-    saveMember,
-    getMemberById,
-    removeMember,
-    selection,
-    removeSelectedMembers,
-  }
+  return { handleDeleteMember, deleteMemberPermanently }
 }
