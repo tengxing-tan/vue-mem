@@ -49,7 +49,7 @@ const onActivateOrDelete = async () => {
           <input
             v-model="memberForm.name"
             type="text"
-            class="mt-1 py-2 md:py-4 px-3 w-full rounded border border-gray-300 shadow text-2xl"
+            class="mt-1 py-2 md:py-4 px-3 w-full rounded border border-gray-300 shadow text-2xl text-gray-700"
             placeholder="Name"
             :aria-invalid="formErrors.name.length > 0"
             :class="{ 'border-gray-500': formErrors.name.length }"
@@ -66,7 +66,7 @@ const onActivateOrDelete = async () => {
           <input
             v-model="memberForm.phoneNo"
             type="text"
-            class="mt-1 py-2 md:py-4 px-3 w-full rounded border border-gray-300 shadow text-2xl"
+            class="mt-1 py-2 md:py-4 px-3 w-full rounded border border-gray-300 shadow text-2xl text-gray-700"
             placeholder="Phone number"
             disabled
             :aria-invalid="formErrors.phoneNo.length > 0"
@@ -84,7 +84,7 @@ const onActivateOrDelete = async () => {
           <input
             v-model="memberForm.points"
             type="number"
-            class="mt-1 py-2 md:py-4 px-3 w-full rounded border border-gray-300 shadow text-2xl"
+            class="mt-1 py-2 md:py-4 px-3 w-full rounded border border-gray-300 shadow text-2xl text-gray-700"
             placeholder="Points"
             :aria-invalid="formErrors.points.length > 0"
             :class="{ 'border-gray-500': formErrors.points.length }"

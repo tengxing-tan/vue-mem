@@ -10,6 +10,12 @@ const routes = [
     component: AllMembers,
   },
   ...memberRoutes,
+  {
+    path: '/points',
+    name: 'points',
+    meta: { title: 'Points' },
+    component: () => import('@/views/points/Point.vue'),
+  }
 ]
 
 const router = createRouter({
