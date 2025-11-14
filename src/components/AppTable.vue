@@ -1,10 +1,5 @@
 <script setup lang="ts">
-defineProps(['headers', 'rows', 'baseUrl', 'queryParam'])
-// const headers = ['Name', 'Phone No']
-// const rows = [
-//   { name: 'John Doe', phonoNo: '1234567890' },
-//   { name: 'Jane Smith', phonoNo: '0987654321' },
-// ]
+defineProps<{ headers: string[] }>()
 </script>
 <template>
   <div class="overflow-x-auto">

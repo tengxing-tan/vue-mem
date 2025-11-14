@@ -21,12 +21,12 @@ export const addOrUpdateMember = async (member: MemberModel, isNew: boolean): Pr
   }
 }
 
-export const getMember = async (id: string): Promise<MemberModel | undefined> => {
-  return await dbPromise.get('members', id)
+export const getMember = async (phoneNo: string): Promise<MemberModel | undefined> => {
+  return await dbPromise.get('members', phoneNo)
 }
 
-export const deleteMember = async (id: string): Promise<void> => {
-  await dbPromise.delete('members', id)
+export const deleteMember = async (phoneNo: string): Promise<void> => {
+  await dbPromise.delete('members', phoneNo)
 }
 
 export const getAllMembers = async (): Promise<MemberModel[]> => {

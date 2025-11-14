@@ -1,25 +1,31 @@
 <script setup lang="ts">
 import Button from '@/components/AppButton.vue'
-import { useMemberAddOrUpdateStore, useMemberFormStore } from '@/composables/useMemberStore'
+import { useMemberFormStore, useMemberStore } from '@/composables/useMemberStore'
 import { initMemberModel } from '@/form-data/initMemberModel'
 import router from '@/router'
-import { ref } from 'vue'
 import AppFormLabel from '@/components/AppFormLabel.vue'
+import { ref } from 'vue'
 
 const props = defineProps<{ phoneNo: string }>()
-const { phoneNoMaxLength } = useMemberFormStore()
-
+const memberAlreadyExists = ref(false)
 const memberForm = ref({ ...initMemberModel, phoneNo: props.phoneNo })
-const { handleCreateMember } = useMemberAddOrUpdateStore()
+
+const { phoneNoMaxLength } = useMemberFormStore()
+const { findMemberInIdb } = useMemberStore()
+
+async function onPhoneNoChange() {
+  memberAlreadyExists.value = !!(await findMemberInIdb(memberForm.value.phoneNo))
+}
 
 async function onSubmit() {
-  await handleCreateMember(memberForm.value)
+  if (memberForm.value.phoneNo.trim() === '') return
+  await useMemberStore().upsertMember(memberForm.value, true)
   router.push('/members')
 }
 </script>
 
 <template>
-  <div>
+  <section>
     <h1 class="text-4xl font-bold py-6 text-black">Create member</h1>
     <form @submit.prevent="onSubmit">
       <div class="pb-6 flex flex-col gap-4">
@@ -44,8 +50,20 @@ async function onSubmit() {
             placeholder="Phone number"
             minlength="1"
             :maxlength="phoneNoMaxLength"
+            @input="onPhoneNoChange"
           />
           <ul class="text-gray-400 text-sm list-disc pl-5 mt-1" aria-live="polite">
+            <li v-show="memberAlreadyExists">
+              💎
+              <RouterLink
+                v-if="memberAlreadyExists"
+                :to="`/member/read/${memberForm.phoneNo}`"
+                class="underline"
+              >
+                Member
+              </RouterLink>
+              already exists. It will be <strong>overwritten</strong>.
+            </li>
             <li>
               Length: {{ memberForm.phoneNo.length }} / {{ phoneNoMaxLength }}
               <span v-show="memberForm.phoneNo.length >= 10">👍</span>
@@ -62,7 +80,9 @@ async function onSubmit() {
           />
         </AppFormLabel>
       </div>
-      <Button type="submit" bg-color="green">Create</Button>
+      <Button type="submit" :bg-color="memberForm.phoneNo.trim() === '' ? 'gray' : 'green'"
+        >Create</Button
+      >
     </form>
-  </div>
+  </section>
 </template>

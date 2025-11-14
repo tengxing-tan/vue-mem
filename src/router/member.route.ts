@@ -1,15 +1,13 @@
-import AllMembers from '@/views/member/AllMembers.vue'
 import MemberCreate from '@/views/member/MemberCreate.vue'
 import MemberRead from '@/views/member/MemberRead.vue'
-import MemberUpdate from '@/views/member/MemberUpdate.vue'
+import MembersView from '@/views/member/MembersView.vue'
 
 export const memberRoutes = [
   {
     path: '/members',
     name: 'members',
-    meta: { title: 'Member List' },
-    component: AllMembers,
-    children: [],
+    meta: { title: 'Members home page' },
+    component: MembersView,
   },
   {
     path: '/member/read/:phoneNo',
@@ -23,13 +21,6 @@ export const memberRoutes = [
     name: 'memberCreate',
     meta: { title: 'Create Member' },
     component: MemberCreate,
-    props: true,
-  },
-  {
-    path: '/member/update/:phoneNo',
-    name: 'memberUpdate',
-    meta: { title: 'Update Member' },
-    component: MemberUpdate,
     props: true,
   },
 ]

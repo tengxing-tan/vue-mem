@@ -1,7 +1,7 @@
-import { useMemberInitStore } from './useMemberStore'
+import { useMemberStore } from './useMemberStore'
 
 export function useJsonDataStore() {
-  const { members } = useMemberInitStore()
+  const { members } = useMemberStore()
 
   const getAllMembersInJson = () => {
     return JSON.stringify(members.value, null, 2)

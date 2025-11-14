@@ -1,39 +1,37 @@
 <script setup lang="ts">
-import Button from '@/components/AppButton.vue'
+import AppButton from '@/components/AppButton.vue'
 import AppFormLabel from '@/components/AppFormLabel.vue'
-import { useMemberAddOrUpdateStore, useMemberGetStore } from '@/composables/useMemberStore'
+import { useMemberStore } from '@/composables/useMemberStore'
 import type { MemberModel } from '@/models/member.model'
-import router from '@/router'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 
 const props = defineProps<{
-  phoneNo: string
+  member: MemberModel
 }>()
 
-const { setPhoneNoSearchKey, member } = useMemberGetStore()
-setPhoneNoSearchKey(props.phoneNo)
+const emits = defineEmits<{
+  (e: 'updated'): void
+}>()
 
-const memberForm = ref({ ...member })
-const initMemberForm = (member: MemberModel | undefined) => {
-  memberForm.value = member
-  return !!member
-}
+const memberForm = ref({ ...props.member })
 
-const { handleUpdateMember } = useMemberAddOrUpdateStore()
+const { upsertMember } = useMemberStore()
+
+onMounted(async () => {})
 
 const onSubmitUpdateMember = async () => {
   if (!memberForm.value) return
 
-  await handleUpdateMember(memberForm.value)
-  router.push('/member/read/' + memberForm.value.phoneNo)
+  await upsertMember({ ...memberForm.value, isDeleted: false }, false)
+  emits('updated')
 }
 
-const onActivateOrDelete = async () => {
+const onDelete = async () => {
   if (!memberForm.value) return
 
-  await handleUpdateMember({ ...memberForm.value, isDeleted: !memberForm.value.isDeleted })
-  router.push('/members')
+  await upsertMember({ ...memberForm.value, isDeleted: true }, false)
+  emits('updated')
 }
 </script>
 
@@ -41,7 +39,7 @@ const onActivateOrDelete = async () => {
   <div>
     <h1 class="text-4xl font-bold py-6 text-black">Update member</h1>
 
-    <form v-if="initMemberForm(member) && memberForm" @submit.prevent="onSubmitUpdateMember()">
+    <form v-if="memberForm" @submit.prevent="onSubmitUpdateMember()">
       <div class="pb-6 flex flex-col gap-4">
         <AppFormLabel label="Name" labelId="name">
           <input
@@ -82,13 +80,13 @@ const onActivateOrDelete = async () => {
         </AppFormLabel>
       </div>
 
-      <div class="flex gap-4">
-        <Button type="submit" bg-color="green">OK</Button>
-        <Button
-          type="button"
-          :bg-color="memberForm.isDeleted ? 'white' : 'rose'"
-          @on-click="onActivateOrDelete"
-          >{{ memberForm.isDeleted ? '🟢Activate' : '🔴Delete' }}</Button
+      <div class="flex justify-between items-center">
+        <div class="space-x-4">
+          <AppButton type="submit" bg-color="green">OK</AppButton>
+          <AppButton type="button" @on-click="$emit('updated')">Back</AppButton>
+        </div>
+        <AppButton v-if="!memberForm.isDeleted" type="button" bg-color="rose" @on-click="onDelete"
+          >Delete</AppButton
         >
       </div>
     </form>

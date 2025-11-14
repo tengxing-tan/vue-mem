@@ -1,79 +1,50 @@
 import type { MemberModel } from '@/models/member.model'
-import { addOrUpdateMember, deleteMember, getAllMembers } from '@/services/member.service'
-import { ref, onMounted } from 'vue'
+import {
+  addOrUpdateMember,
+  getAllMembers,
+  getMember,
+  deleteMember,
+} from '@/services/member.service'
+import { ref } from 'vue'
 
 export function useMemberFormStore() {
   const phoneNoMaxLength = 20
   return { phoneNoMaxLength }
 }
 
-export function useMemberInitStore() {
+export function useMemberStore() {
   const members = ref<MemberModel[]>([])
-
-  onMounted(() => {
-    getAllMembers().then((membersData) => (members.value = membersData))
-  })
-
-  return { members }
-}
-
-export function useMemberGetStore() {
-  const member = ref<MemberModel | undefined>()
-  const members = ref<MemberModel[]>()
-  const phoneNoSearchKey = ref<string>('')
-
-  const setPhoneNoSearchKey = (phoneNo: string) => {
-    phoneNoSearchKey.value = phoneNo
-  }
-
-  const getMemberByPhoneNo = (phoneNo: string): MemberModel | undefined => {
-    return members.value?.find((member) => member.phoneNo === phoneNo)
-  }
-
-  onMounted(async (): Promise<void> => {
-    members.value = await getAllMembers()
-    member.value = getMemberByPhoneNo(phoneNoSearchKey.value)
-  })
-
-  return { member, getMemberByPhoneNo, setPhoneNoSearchKey }
-}
-
-export function useMemberAddOrUpdateStore() {
-  const { getMemberByPhoneNo } = useMemberGetStore()
-
-  const handleUpdateMember = async (updateMember: MemberModel) => {
-    if (!getMemberByPhoneNo(updateMember.phoneNo)) {
-      alert('Member does not exist: ' + updateMember.phoneNo)
-    }
-
-    await addOrUpdateMember(updateMember, false)
-  }
-
-  const handleCreateMember = async (newMember: MemberModel) => {
-    if (newMember.phoneNo.trim() === '') return
-    await addOrUpdateMember(newMember, true)
-  }
-
-  return { handleUpdateMember, handleCreateMember }
-}
-
-export function useMemberDeleteStore() {
-  const { getMemberByPhoneNo } = useMemberGetStore()
-
-  const { handleUpdateMember } = useMemberAddOrUpdateStore()
-  const handleDeleteMember = async (phoneNo: string) => {
-    const member = getMemberByPhoneNo(phoneNo)
-    if (member) {
-      handleUpdateMember({ ...member, isDeleted: true })
+  const loaded = ref(false)
+  const lazyLoadMemberData = async () => {
+    if (!loaded.value) {
+      members.value = await getAllMembers()
+      loaded.value = true
     }
   }
 
-  const deleteMemberPermanently = async (phoneNo: string) => {
-    const member = getMemberByPhoneNo(phoneNo)
-    if (member) {
-      await deleteMember(member.phoneNo)
-    }
+  async function findMember(phoneNo: string): Promise<MemberModel | undefined> {
+    await lazyLoadMemberData()
+    return members.value?.find((m) => m.phoneNo === phoneNo)
   }
 
-  return { handleDeleteMember, deleteMemberPermanently }
+  async function findMemberInIdb(phoneNo: string): Promise<MemberModel | undefined> {
+    return await getMember(phoneNo)
+  }
+
+  async function upsertMember(memberUpdate: MemberModel, isNew: boolean) {
+    await addOrUpdateMember(memberUpdate, isNew)
+  }
+
+  async function deleteMemberFromIdb(phoneNo: string) {
+    await deleteMember(phoneNo)
+  }
+
+  return {
+    lazyLoadMemberData,
+    findMember,
+    findMemberInIdb,
+    upsertMember,
+    deleteMemberFromIdb,
+    members,
+  }
 }
