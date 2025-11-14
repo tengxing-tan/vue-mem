@@ -4,7 +4,7 @@ import AppFormLabel from '@/components/AppFormLabel.vue'
 import AppModal from '@/components/AppModal.vue'
 import { useMemberAddOrUpdateStore, useMemberGetStore } from '@/composables/useMemberStore'
 import type { MemberModel } from '@/models/member.model'
-import { ref, vModelSelect } from 'vue'
+import { ref } from 'vue'
 
 const memberPhoneNo = ref('')
 const addPoints = ref('')

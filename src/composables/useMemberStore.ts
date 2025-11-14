@@ -2,6 +2,11 @@ import type { MemberModel } from '@/models/member.model'
 import { addOrUpdateMember, deleteMember, getAllMembers } from '@/services/member.service'
 import { ref, onMounted } from 'vue'
 
+export function useMemberFormStore() {
+  const phoneNoMaxLength = 20
+  return { phoneNoMaxLength }
+}
+
 export function useMemberInitStore() {
   const members = ref<MemberModel[]>([])
 

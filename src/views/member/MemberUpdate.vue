@@ -5,7 +5,6 @@ import { useMemberAddOrUpdateStore, useMemberGetStore } from '@/composables/useM
 import type { MemberModel } from '@/models/member.model'
 import router from '@/router'
 import { ref } from 'vue'
-import { useMemberFormValidation } from '@/composables/useMemberFormValidation'
 import { RouterLink } from 'vue-router'
 
 const props = defineProps<{
@@ -22,10 +21,9 @@ const initMemberForm = (member: MemberModel | undefined) => {
 }
 
 const { handleUpdateMember } = useMemberAddOrUpdateStore()
-const { formErrors, isValid } = useMemberFormValidation(memberForm)
 
 const onSubmitUpdateMember = async () => {
-  if (!memberForm.value || !isValid.value) return
+  if (!memberForm.value) return
 
   await handleUpdateMember(memberForm.value)
   router.push('/member/read/' + memberForm.value.phoneNo)
@@ -51,33 +49,27 @@ const onActivateOrDelete = async () => {
             type="text"
             class="mt-1 py-2 md:py-4 px-3 w-full rounded border border-gray-300 shadow text-2xl text-gray-700"
             placeholder="Name"
-            :aria-invalid="formErrors.name.length > 0"
-            :class="{ 'border-gray-500': formErrors.name.length }"
           />
-          <ul
-            v-show="formErrors.name.length"
-            class="text-gray-600 text-xs list-disc pl-5 mt-1"
-            aria-live="polite"
-          >
-            <li v-for="e in formErrors.name" :key="e">{{ e }}</li>
+          <ul class="text-gray-400 text-sm list-disc pl-5 mt-1" aria-live="polite">
+            <li>No name also fine.</li>
           </ul>
         </AppFormLabel>
         <AppFormLabel label="Phone number" labelId="phoneNo">
           <input
             v-model="memberForm.phoneNo"
             type="text"
-            class="mt-1 py-2 md:py-4 px-3 w-full rounded border border-gray-300 shadow text-2xl text-gray-700"
+            class="opacity-60 mt-1 py-2 md:py-4 px-3 w-full rounded border border-gray-300 shadow text-2xl text-gray-700"
             placeholder="Phone number"
             disabled
-            :aria-invalid="formErrors.phoneNo.length > 0"
-            :class="{ 'border-gray-500': formErrors.phoneNo.length }"
           />
-          <ul
-            v-show="formErrors.phoneNo.length"
-            class="text-gray-600 text-xs list-disc pl-5 mt-1"
-            aria-live="polite"
-          >
-            <li v-for="e in formErrors.phoneNo" :key="e">{{ e }}</li>
+          <ul class="text-gray-400 text-sm list-disc pl-5 mt-1" aria-live="polite">
+            <li>
+              Cannot change phone number,
+              <RouterLink to="/member/create" class="underline font-semibold"
+                >create new
+              </RouterLink>
+              one please.
+            </li>
           </ul>
         </AppFormLabel>
         <AppFormLabel label="Points" labelId="points">
@@ -86,21 +78,12 @@ const onActivateOrDelete = async () => {
             type="number"
             class="mt-1 py-2 md:py-4 px-3 w-full rounded border border-gray-300 shadow text-2xl text-gray-700"
             placeholder="Points"
-            :aria-invalid="formErrors.points.length > 0"
-            :class="{ 'border-gray-500': formErrors.points.length }"
           />
-          <ul
-            v-show="formErrors.points.length"
-            class="text-gray-600 text-xs list-disc pl-5 mt-1"
-            aria-live="polite"
-          >
-            <li v-for="e in formErrors.points" :key="e">{{ e }}</li>
-          </ul>
         </AppFormLabel>
       </div>
 
       <div class="flex gap-4">
-        <Button type="submit" bg-color="green" :disabled="!isValid">✒️OK</Button>
+        <Button type="submit" bg-color="green">OK</Button>
         <Button
           type="button"
           :bg-color="memberForm.isDeleted ? 'white' : 'rose'"

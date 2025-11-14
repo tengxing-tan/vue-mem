@@ -14,11 +14,11 @@ import PwaInstallButton from './components/PwaInstallButton.vue'
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
           <div class="flex items-center gap-2">
-            <RouterLink to="/members">
-              <span class="font-semibold text-lg text-gray-800">💎Members</span>
-            </RouterLink>
             <RouterLink to="/points">
               <span class="font-semibold text-lg text-gray-800">🍄Points</span>
+            </RouterLink>
+            <RouterLink to="/members">
+              <span class="font-semibold text-lg text-gray-800">💎Members</span>
             </RouterLink>
           </div>
         </div>
@@ -27,7 +27,7 @@ import PwaInstallButton from './components/PwaInstallButton.vue'
         <PwaInstallButton />
       </nav>
     </header>
-    <div class="text-lg h-full overflow-auto p-4">
+    <div class="text-lg h-full bg-white overflow-auto p-4">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <RouterView />
       </div>
