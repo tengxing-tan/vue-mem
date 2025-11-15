@@ -1,4 +1,3 @@
-import { PointStatus } from '@/enums/PointStatus'
 import { type PointModel } from '@/models/point.model'
 import {
   addPoint,
@@ -30,13 +29,11 @@ export function usePointStore() {
 
   async function upsertPoint(pointUpdate: PointModel, isNew: boolean) {
     if (isNew) {
-      const result = await addPoint(pointUpdate)
-      if (!result) return
-
-      pointUpdate.id = result as number
+      await addPoint(pointUpdate)
+      return
     }
 
-    await updatePoint({ ...pointUpdate, status: PointStatus.Issued })
+    await updatePoint({ ...pointUpdate })
   }
 
   async function deletePointFromIdb(id: number) {
