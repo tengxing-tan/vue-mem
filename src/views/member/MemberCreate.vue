@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Button from '@/components/AppButton.vue'
-import { useMemberFormStore, useMemberStore } from '@/composables/useMemberStore'
+import { useMemberFormStore, useMemberStore } from '@/views/member/useMemberStore'
 import { initMemberModel } from '@/form-data/initMemberModel'
 import router from '@/router'
 import AppFormLabel from '@/components/AppFormLabel.vue'

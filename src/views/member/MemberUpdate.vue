@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import AppButton from '@/components/AppButton.vue'
 import AppFormLabel from '@/components/AppFormLabel.vue'
-import { useMemberStore } from '@/composables/useMemberStore'
+import { useMemberStore } from '@/views/member/useMemberStore'
 import type { MemberModel } from '@/models/member.model'
-import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import { ref } from 'vue'
 
 const props = defineProps<{
   member: MemberModel
@@ -17,8 +17,6 @@ const emits = defineEmits<{
 const memberForm = ref({ ...props.member })
 
 const { upsertMember } = useMemberStore()
-
-onMounted(async () => {})
 
 const onSubmitUpdateMember = async () => {
   if (!memberForm.value) return

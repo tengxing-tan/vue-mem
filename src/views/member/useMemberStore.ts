@@ -1,9 +1,9 @@
 import type { MemberModel } from '@/models/member.model'
 import {
   addOrUpdateMember,
-  getAllMembers,
   getMember,
   deleteMember,
+  getAllMembers,
 } from '@/services/member.service'
 import { ref } from 'vue'
 
@@ -17,7 +17,8 @@ export function useMemberStore() {
   const loaded = ref(false)
   const lazyLoadMemberData = async () => {
     if (!loaded.value) {
-      members.value = await getAllMembers()
+      const allMembers = await getAllMembers()
+      members.value = allMembers.sort((a, b) => (b.updatedAt > a.updatedAt ? 1 : -1))
       loaded.value = true
     }
   }
@@ -35,7 +36,7 @@ export function useMemberStore() {
     await addOrUpdateMember(memberUpdate, isNew)
   }
 
-  async function deleteMemberFromIdb(phoneNo: string) {
+  async function deleteRowFromIdb(phoneNo: string) {
     await deleteMember(phoneNo)
   }
 
@@ -44,7 +45,7 @@ export function useMemberStore() {
     findMember,
     findMemberInIdb,
     upsertMember,
-    deleteMemberFromIdb,
+    deleteRowFromIdb,
     members,
   }
 }

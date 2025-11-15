@@ -24,8 +24,8 @@ const navClass = (path: string) =>
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
           <div class="flex items-center gap-2 text-lg text-gray-800">
-            <RouterLink to="/points">
-              <span :class="navClass('/points')">🍄Points</span>
+            <RouterLink to="/point">
+              <span :class="navClass('/point')">🍄Points</span>
             </RouterLink>
             <RouterLink to="/members">
               <span :class="navClass('/members')">💎Members</span>

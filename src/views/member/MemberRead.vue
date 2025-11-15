@@ -2,15 +2,16 @@
 import AppBadge from '@/components/AppBadge.vue'
 import AppButton from '@/components/AppButton.vue'
 import AppFormLabel from '@/components/AppFormLabel.vue'
-import { useMemberStore } from '@/composables/useMemberStore'
-import { onMounted, ref } from 'vue'
-import { formatMemberDate } from '@/composables/useAppFormatterStore'
+import { useMemberStore } from '@/views/member/useMemberStore'
+import { defineAsyncComponent, onMounted, ref } from 'vue'
+import { dateFormat } from '@/composables/useAppFormatterStore'
 import type { MemberModel } from '@/models/member.model'
-import MemberUpdate from './MemberUpdate.vue'
 
 const props = defineProps<{
   phoneNo: string
 }>()
+
+const MemberUpdate = defineAsyncComponent(() => import('./MemberUpdate.vue'))
 
 const member = ref<MemberModel | undefined>(undefined)
 const showMemberUpdate = ref(false)
@@ -42,7 +43,7 @@ onMounted(async () => {
       </AppFormLabel>
       <AppFormLabel label="Joined since" labelId="createdAt">
         <p class="mt-1 py-2 md:py-4 px-3 w-full text-2xl font-semibold text-gray-700">
-          {{ formatMemberDate(member.createdAt) }}
+          {{ dateFormat(member.createdAt) }}
         </p>
       </AppFormLabel>
 

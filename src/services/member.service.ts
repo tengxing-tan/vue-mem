@@ -2,16 +2,20 @@
 
 import type { MemberModel } from '@/models/member.model'
 import { dbPromise } from './db'
-export const addOrUpdateMember = async (member: MemberModel, isNew: boolean): Promise<void> => {
+
+type DataModel = MemberModel
+type PrimaryKey = string
+
+export const addOrUpdateMember = async (data: DataModel, isNew: boolean): Promise<void> => {
   try {
     await dbPromise.put(
       'members',
       JSON.parse(
         JSON.stringify({
-          ...member,
-          createdAt: isNew ? new Date() : member.createdAt,
+          ...data,
+          createdAt: isNew ? new Date() : data.createdAt,
           updatedAt: new Date(),
-          isDeleted: member.isDeleted || false,
+          isDeleted: data.isDeleted || false,
         }),
       ),
     )
@@ -21,14 +25,14 @@ export const addOrUpdateMember = async (member: MemberModel, isNew: boolean): Pr
   }
 }
 
-export const getMember = async (phoneNo: string): Promise<MemberModel | undefined> => {
-  return await dbPromise.get('members', phoneNo)
+export const getMember = async (primaryKey: PrimaryKey): Promise<MemberModel | undefined> => {
+  return await dbPromise.get('members', primaryKey)
 }
 
-export const deleteMember = async (phoneNo: string): Promise<void> => {
-  await dbPromise.delete('members', phoneNo)
+export const deleteMember = async (primaryKey: PrimaryKey): Promise<void> => {
+  await dbPromise.delete('members', primaryKey)
 }
 
-export const getAllMembers = async (): Promise<MemberModel[]> => {
+export const getAllMembers = async (): Promise<DataModel[]> => {
   return await dbPromise.getAll('members')
 }

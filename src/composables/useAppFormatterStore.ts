@@ -1,4 +1,4 @@
-export function formatMemberDate(value: string | Date): string {
+export function dateFormat(value?: string | Date): string {
   if (!value) return ''
   const d = new Date(value)
   if (isNaN(d.getTime())) return ''

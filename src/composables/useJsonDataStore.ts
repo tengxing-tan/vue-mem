@@ -1,4 +1,4 @@
-import { useMemberStore } from './useMemberStore'
+import { useMemberStore } from '../views/member/useMemberStore'
 
 export function useJsonDataStore() {
   const { members } = useMemberStore()
