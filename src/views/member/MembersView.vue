@@ -2,7 +2,7 @@
 import AppBadge from '@/components/AppBadge.vue'
 import AppButton from '@/components/AppButton.vue'
 import AppTable from '@/components/AppTable.vue'
-// import { useJsonDataStore } from '@/composables/useJsonDataStore'
+import { useJsonDataStore } from '@/composables/useJsonDataStore'
 import { useMemberStore } from '@/views/member/useMemberStore'
 import router from '@/router'
 import { onMounted, ref } from 'vue'
@@ -10,7 +10,7 @@ import { useRoute } from 'vue-router'
 import { dbPromise } from '@/services/db'
 
 const route = useRoute()
-// const { getAllMembersInJson } = useJsonDataStore()
+const dumpData = route.query.dump === 'true'
 const totalMembers = ref(0)
 const headers = ['Name', 'Phone No', 'Points']
 const { members, lazyLoadMemberData, upsertMember, loadAllMembers } = useMemberStore()
@@ -32,7 +32,11 @@ const showAll = async () => {
   await loadAllMembers()
 }
 
-async function dumpData() {
+async function handleDumpData() {
+  if (!confirm('This will insert 200 dummy members into the database. Continue?')) {
+    return
+  }
+
   for (let i = 1; i <= 200; i++) {
     await upsertMember(
       {
@@ -49,16 +53,13 @@ async function dumpData() {
 }
 </script>
 <template>
-  <section>
+  <section v-if="!dumpData">
     <div class="flex justify-between items-center">
       <h1 class="text-4xl font-bold py-6 text-black">All Members</h1>
       <RouterLink to="/member/create">
         <AppButton bgColor="yellow">Add Member</AppButton>
       </RouterLink>
     </div>
-    <AppButton bgColor="yellow" v-if="route.query.dump === 'true'" @on-click="dumpData"
-      >Dump data</AppButton
-    >
 
     <!-- Showing 202 / 202 members.  -->
     <p class="pb-6 text-sm text-zinc-600 transition">
@@ -100,8 +101,16 @@ async function dumpData() {
         </td>
       </tr>
     </AppTable>
-    <!---
-    <h1>JSON Representation</h1>
-    <pre>{{ getAllMembersInJson() }}</pre>
-  --></section>
+  </section>
+  <section v-else>
+    <h1 class="text-4xl font-bold py-6 text-black">JSON Representation</h1>
+    <div class="space-x-4">
+      <AppButton bgColor="white" v-if="dumpData" @on-click="handleDumpData">Dump data</AppButton>
+      <AppButton bgColor="yellow" @on-click="useJsonDataStore().sendMembersJson(members)"
+        >Upload</AppButton
+      >
+    </div>
+
+    <pre>{{ useJsonDataStore().getAllMembersInJson(members) }}</pre>
+  </section>
 </template>

@@ -28,3 +28,20 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+# Cloudflare Wrangler local state (D1 sqlite, metadata, build cache)
+.wrangler/
+.wrangler-state/
+.wrangler/**
+.wrangler/state/**
+
+# Local environment variable files (keep template .env.example if added)
+.env
+.env.*
+!.env.example
+
+# D1 database files if any copied out (defensive patterns)
+*.sqlite
+*.db
+*.sqlite-journal
+
