@@ -1,6 +1,16 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import PwaInstallButton from './components/PwaInstallButton.vue'
+
+import { useRoute } from 'vue-router'
+import { computed } from 'vue'
+
+const route = useRoute()
+const currentPath = computed(() => route.path)
+
+const isActive = (path: string) => currentPath.value.startsWith(path)
+const navClass = (path: string) =>
+  isActive(path) && 'underline underline-offset-4 decoration-2 decoration-sky-400'
 </script>
 
 <template>
@@ -13,12 +23,12 @@ import PwaInstallButton from './components/PwaInstallButton.vue'
     <header class="border-b border-gray-200 shadow-sm">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
-          <div class="flex items-center gap-2">
-            <RouterLink to="/members">
-              <span class="font-semibold text-lg text-gray-800">💎Members</span>
+          <div class="flex items-center gap-2 text-lg text-gray-800">
+            <RouterLink to="/point">
+              <span :class="navClass('/point')">🍄Points</span>
             </RouterLink>
-            <RouterLink to="/points">
-              <span class="font-semibold text-lg text-gray-800">🍄Points</span>
+            <RouterLink to="/members">
+              <span :class="navClass('/member')">💎Members</span>
             </RouterLink>
           </div>
         </div>
@@ -27,18 +37,18 @@ import PwaInstallButton from './components/PwaInstallButton.vue'
         <PwaInstallButton />
       </nav>
     </header>
-    <div class="text-lg h-full overflow-auto p-4">
+    <div class="text-lg h-full bg-white overflow-auto p-4">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <RouterView />
       </div>
-    </div>
 
-    <footer class="border-t border-gray-200">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 text-sm text-gray-700">
-        <p class="font-semibold pb-4 text-lg">Membership App 💎</p>
-        <p>Created by Teng Xing 💪</p>
-      </div>
-    </footer>
+      <footer class="border-t border-gray-200">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 text-sm text-gray-700">
+          <p class="font-semibold pb-4 text-lg">Membership App 💎</p>
+          <p>Created by Teng Xing 💪</p>
+        </div>
+      </footer>
+    </div>
   </div>
 </template>
 

@@ -1,21 +1,27 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { memberRoutes } from './member.route'
-import AllMembers from '@/views/member/AllMembers.vue'
+import PointView from '@/views/point/PointView.vue'
 
 const routes = [
   {
     path: '/',
     name: 'home',
     meta: { title: 'Home' },
-    component: AllMembers,
+    component: PointView,
   },
   ...memberRoutes,
   {
-    path: '/points',
-    name: 'points',
-    meta: { title: 'Points' },
-    component: () => import('@/views/points/Point.vue'),
-  }
+    path: '/point',
+    name: 'point',
+    meta: { title: 'Point' },
+    component: PointView,
+  },
+  {
+    path: '/point/history',
+    name: 'pointHistory',
+    meta: { title: 'Point History' },
+    component: () => import('@/views/point/PointHistory.vue'),
+  },
 ]
 
 const router = createRouter({

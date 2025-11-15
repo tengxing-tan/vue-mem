@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "run-p type-check \"build-only {@}\" --",
+    "dev:worker": "wrangler dev src/worker.ts",
     "lint": "eslint . --fix",
     "build-only": "vite build",
     "dev": "vite",
@@ -19,6 +20,7 @@
     "vue-router": "^4.6.3"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20251115.0",
     "@tsconfig/node22": "^22.0.2",
     "@types/node": "^22.18.11",
     "@vitejs/plugin-vue": "^6.0.1",

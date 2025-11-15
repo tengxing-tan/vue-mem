@@ -1,31 +1,34 @@
 <script setup lang="ts">
+import AppBadge from '@/components/AppBadge.vue'
 import AppButton from '@/components/AppButton.vue'
 import AppFormLabel from '@/components/AppFormLabel.vue'
-import { useMemberGetStore } from '@/composables/useMemberStore'
+import { useMemberStore } from '@/views/member/useMemberStore'
+import { defineAsyncComponent, onMounted, ref } from 'vue'
+import { dateFormat } from '@/composables/useAppFormatterStore'
+import type { MemberModel } from '@/models/member.model'
 
 const props = defineProps<{
   phoneNo: string
 }>()
 
-const { setPhoneNoSearchKey, member } = useMemberGetStore()
-setPhoneNoSearchKey(props.phoneNo)
+const MemberUpdate = defineAsyncComponent(() => import('./MemberUpdate.vue'))
 
-function formatMemberDate(value: string | Date): string {
-  if (!value) return ''
-  const d = new Date(value)
-  if (isNaN(d.getTime())) return ''
-  // return d.toUTCString()
-  return d.toDateString()
-}
+const member = ref<MemberModel | undefined>(undefined)
+const showMemberUpdate = ref(false)
+
+onMounted(async () => {
+  member.value = await useMemberStore().findMemberInIdb(props.phoneNo)
+})
 </script>
 <template>
-  <section>
+  <section v-if="!showMemberUpdate">
     <h1 class="text-4xl font-bold py-6 text-black">Member Details</h1>
 
     <div v-if="member" class="pb-6 flex flex-col gap-4">
       <AppFormLabel label="Name" labelId="name">
         <p class="mt-1 py-2 md:py-4 px-3 w-full text-2xl font-semibold text-gray-700">
           {{ member.name }}
+          <AppBadge v-if="member.isDeleted" color="red">Deleted</AppBadge>
         </p>
       </AppFormLabel>
       <AppFormLabel label="Phone No" labelId="phoneNo">
@@ -40,13 +43,14 @@ function formatMemberDate(value: string | Date): string {
       </AppFormLabel>
       <AppFormLabel label="Joined since" labelId="createdAt">
         <p class="mt-1 py-2 md:py-4 px-3 w-full text-2xl font-semibold text-gray-700">
-          {{ formatMemberDate(member.createdAt) }}
+          {{ dateFormat(member.createdAt) }}
         </p>
       </AppFormLabel>
 
-      <div>
-        <RouterLink :to="'/member/update/' + member.phoneNo">
-          <AppButton bg-color="green">Update Member</AppButton>
+      <div class="space-x-4">
+        <AppButton bg-color="green" @on-click="showMemberUpdate = true">Update</AppButton>
+        <RouterLink to="/members">
+          <AppButton>Back</AppButton>
         </RouterLink>
       </div>
     </div>
@@ -54,5 +58,8 @@ function formatMemberDate(value: string | Date): string {
     <div v-else>
       <p>No member found with phone number: {{ phoneNo }}</p>
     </div>
+  </section>
+  <section v-else>
+    <MemberUpdate v-if="member" :member="member" @updated="showMemberUpdate = false" />
   </section>
 </template>
