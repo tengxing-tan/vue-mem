@@ -23,7 +23,7 @@ async function onPhoneNoChange() {
 function onAddPoints() {
   if (!member.value) return
   const pointsToAdd = parseInt(addPoints.value)
-  if (isNaN(pointsToAdd) || pointsToAdd <= 0) return
+  if (isNaN(pointsToAdd)) return
   showModal.value = true
 
   upsertPoint(
@@ -33,7 +33,7 @@ function onAddPoints() {
       pointsAfter: member.value.points + pointsToAdd,
       createdAt: new Date(),
       issuedBy: 'Amigos',
-      status: PointStatus.Issued,
+      status: pointsToAdd > 0 ? PointStatus.Issued : PointStatus.Cancelled,
     },
     true,
   )
@@ -41,10 +41,15 @@ function onAddPoints() {
   member.value.points += pointsToAdd
   upsertMember(member.value, false)
 }
+
+function closeModal() {
+  showModal.value = false
+  addPoints.value = ''
+}
 </script>
 <template>
   <section class="bg-white">
-    <AppModal v-show="showModal" title="🍄 Points Added " @ok="showModal = false">
+    <AppModal v-show="showModal" title="🍄 Points Added " @ok="closeModal">
       <div class="text-6xl text-store-700 w-full p-4 grid place-content-center">
         {{ addPoints }}
       </div>

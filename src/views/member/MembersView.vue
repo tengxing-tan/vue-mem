@@ -10,10 +10,16 @@ import { useRoute } from 'vue-router'
 import { dbPromise } from '@/services/db'
 import AppFormLabel from '@/components/AppFormLabel.vue'
 import { getCompanyEmail, setCompanyEmail } from '@/services/setting.service'
+import type { MemberModel } from '@/models/member.model'
 
 const route = useRoute()
 const dumpData = route.query.dump === 'true'
 const totalMembers = ref(0)
+const showingMembers = ref([] as MemberModel[])
+const filter = ref({
+  phoneNo: '',
+  member: undefined as MemberModel[] | undefined,
+})
 const companyEmail = ref('')
 const headers = ['Name', 'Phone No', 'Points']
 const { members, lazyLoadMemberData, upsertMember, loadAllMembers } = useMemberStore()
@@ -23,17 +29,24 @@ const routeToMemberRead = (phoneNo: string) => {
 }
 
 onMounted(async () => {
-  lazyLoadMemberData()
+  await lazyLoadMemberData()
+  showingMembers.value = members.value
   totalMembers.value = (await dbPromise.getAllKeys('members')).length
   companyEmail.value = (await getCompanyEmail('companyEmail'))?.value.toString() || ''
 })
 
+const onPhoneNoChange = async () => {
+  filter.value.member = await useMemberStore().filterMembers(filter.value.phoneNo)
+  showingMembers.value = filter.value.member ? filter.value.member : members.value
+}
+
 const showAll = async () => {
-  if (members.value.length === totalMembers.value) {
+  if (showingMembers.value.length === totalMembers.value) {
     return
   }
 
   await loadAllMembers()
+  showingMembers.value = members.value
 }
 
 async function handleDumpData() {
@@ -70,11 +83,21 @@ const onClickUpload = async () => {
       </RouterLink>
     </div>
 
-    <!-- Showing 202 / 202 members.  -->
-    <p class="pb-6 text-sm text-zinc-600 transition">
-      Showing {{ members.length }} / {{ totalMembers }} members.
+    <AppFormLabel label="Phone No" labelId="phoneNo">
       <input
-        v-show="members.length !== totalMembers"
+        v-model="filter.phoneNo"
+        type="text"
+        class="mt-1 py-2 md:py-4 px-3 w-full rounded-lg border-4 border-gray-300 shadow text-2xl text-gray-700"
+        @input="onPhoneNoChange"
+        autofocus
+      />
+    </AppFormLabel>
+
+    <!-- Showing 202 / 202 members.  -->
+    <p class="pt-2 pb-6 text-sm text-zinc-600 transition">
+      Showing {{ showingMembers.length }} / {{ totalMembers }} members.
+      <input
+        v-show="showingMembers.length !== totalMembers"
         type="button"
         value="Show all"
         class="underline cursor-pointer"
@@ -82,9 +105,9 @@ const onClickUpload = async () => {
       />
     </p>
 
-    <AppTable v-if="members.length > 0" :headers="headers">
+    <AppTable v-if="showingMembers.length > 0" :headers="headers">
       <tr
-        v-for="member in members"
+        v-for="member in showingMembers"
         :key="member.phoneNo"
         class="*:text-gray-900 *:first:sticky *:first:left-0 *:first:bg-white *:first:font-medium"
       >

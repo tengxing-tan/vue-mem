@@ -28,9 +28,9 @@ export function useMemberStore() {
     members.value = allMembers.sort((a, b) => (b.updatedAt > a.updatedAt ? 1 : -1))
   }
 
-  async function findMember(phoneNo: string): Promise<MemberModel | undefined> {
+  async function filterMembers(phoneNo: string): Promise<MemberModel[] | undefined> {
     await lazyLoadMemberData()
-    return members.value?.find((m) => m.phoneNo === phoneNo)
+    return members.value?.filter((m) => m.phoneNo === phoneNo || m.phoneNo.startsWith(phoneNo))
   }
 
   async function findMemberInIdb(phoneNo: string): Promise<MemberModel | undefined> {
@@ -48,7 +48,7 @@ export function useMemberStore() {
   return {
     lazyLoadMemberData,
     loadAllMembers,
-    findMember,
+    filterMembers,
     findMemberInIdb,
     upsertMember,
     deleteRowFromIdb,

@@ -1,9 +1,7 @@
 import { openDB } from 'idb'
 
-export const dbPromise = await openDB('tengxingCoolApp', 4, {
-  upgrade(db, oldVersion, newVersion, transaction, event) {
-    if (!db || !oldVersion || !newVersion || !transaction || !event) return
-
+export const dbPromise = await openDB('tengxingCoolApp', 5, {
+  upgrade(db, oldVersion, newVersion, transaction) {
     members()
     points()
     settings()
