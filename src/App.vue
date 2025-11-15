@@ -38,7 +38,7 @@ const navClass = (path: string) =>
       </nav>
     </header>
     <div class="text-lg bg-white p-4 min-h-3/4">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 overflow-y-scroll">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <RouterView />
       </div>
     </div>
