@@ -19,4 +19,11 @@ export const memberRoutes = [
     component: () => import('@/views/member/MemberCreate.vue'),
     props: true,
   },
+  {
+    path: '/member/dump',
+    name: 'memberDump',
+    meta: { title: 'Dump Member' },
+    component: () => import('@/views/member/MemberDump.vue'),
+    props: true,
+  },
 ]
