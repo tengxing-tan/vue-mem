@@ -8,7 +8,7 @@ import { computed } from 'vue'
 const route = useRoute()
 const currentPath = computed(() => route.path)
 
-const isActive = (path: string) => currentPath.value === path
+const isActive = (path: string) => currentPath.value.startsWith(path)
 const navClass = (path: string) =>
   isActive(path) && 'underline underline-offset-4 decoration-2 decoration-sky-400'
 </script>
@@ -28,7 +28,7 @@ const navClass = (path: string) =>
               <span :class="navClass('/point')">🍄Points</span>
             </RouterLink>
             <RouterLink to="/members">
-              <span :class="navClass('/members')">💎Members</span>
+              <span :class="navClass('/member')">💎Members</span>
             </RouterLink>
           </div>
         </div>
@@ -41,14 +41,14 @@ const navClass = (path: string) =>
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <RouterView />
       </div>
-    </div>
 
-    <footer class="border-t border-gray-200">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 text-sm text-gray-700">
-        <p class="font-semibold pb-4 text-lg">Membership App 💎</p>
-        <p>Created by Teng Xing 💪</p>
-      </div>
-    </footer>
+      <footer class="border-t border-gray-200">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 text-sm text-gray-700">
+          <p class="font-semibold pb-4 text-lg">Membership App 💎</p>
+          <p>Created by Teng Xing 💪</p>
+        </div>
+      </footer>
+    </div>
   </div>
 </template>
 

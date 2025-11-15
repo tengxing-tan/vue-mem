@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { memberRoutes } from './member.route'
-import AllMembers from '@/views/member/MembersView.vue'
 import PointView from '@/views/point/PointView.vue'
 
 const routes = [
@@ -8,7 +7,7 @@ const routes = [
     path: '/',
     name: 'home',
     meta: { title: 'Home' },
-    component: AllMembers,
+    component: PointView,
   },
   ...memberRoutes,
   {

@@ -33,6 +33,6 @@ export const deleteMember = async (primaryKey: PrimaryKey): Promise<void> => {
   await dbPromise.delete('members', primaryKey)
 }
 
-export const getAllMembers = async (): Promise<DataModel[]> => {
-  return await dbPromise.getAll('members')
+export const getAllMembers = async (count?: number): Promise<DataModel[]> => {
+  return await dbPromise.getAll('members', undefined, count)
 }

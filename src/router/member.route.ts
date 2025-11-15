@@ -1,26 +1,22 @@
-import MemberCreate from '@/views/member/MemberCreate.vue'
-import MemberRead from '@/views/member/MemberRead.vue'
-import MembersView from '@/views/member/MembersView.vue'
-
 export const memberRoutes = [
   {
     path: '/members',
     name: 'members',
     meta: { title: 'Members home page' },
-    component: MembersView,
+    component: () => import('@/views/member/MembersView.vue'),
   },
   {
     path: '/member/read/:phoneNo',
     name: 'memberRead',
     meta: { title: 'Read Member' },
-    component: MemberRead,
+    component: () => import('@/views/member/MemberRead.vue'),
     props: true,
   },
   {
     path: '/member/create/:phoneNo?',
     name: 'memberCreate',
     meta: { title: 'Create Member' },
-    component: MemberCreate,
+    component: () => import('@/views/member/MemberCreate.vue'),
     props: true,
   },
 ]

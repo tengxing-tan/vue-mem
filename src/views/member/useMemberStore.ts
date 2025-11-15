@@ -17,10 +17,15 @@ export function useMemberStore() {
   const loaded = ref(false)
   const lazyLoadMemberData = async () => {
     if (!loaded.value) {
-      const allMembers = await getAllMembers()
+      const allMembers = await getAllMembers(100)
       members.value = allMembers.sort((a, b) => (b.updatedAt > a.updatedAt ? 1 : -1))
       loaded.value = true
     }
+  }
+
+  const loadAllMembers = async () => {
+    const allMembers = await getAllMembers()
+    members.value = allMembers.sort((a, b) => (b.updatedAt > a.updatedAt ? 1 : -1))
   }
 
   async function findMember(phoneNo: string): Promise<MemberModel | undefined> {
@@ -42,6 +47,7 @@ export function useMemberStore() {
 
   return {
     lazyLoadMemberData,
+    loadAllMembers,
     findMember,
     findMemberInIdb,
     upsertMember,

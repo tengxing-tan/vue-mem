@@ -5,21 +5,32 @@ import AppTable from '@/components/AppTable.vue'
 // import { useJsonDataStore } from '@/composables/useJsonDataStore'
 import { useMemberStore } from '@/views/member/useMemberStore'
 import router from '@/router'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { dbPromise } from '@/services/db'
 
 const route = useRoute()
 // const { getAllMembersInJson } = useJsonDataStore()
+const totalMembers = ref(0)
 const headers = ['Name', 'Phone No', 'Points']
-const { members, lazyLoadMemberData, upsertMember } = useMemberStore()
+const { members, lazyLoadMemberData, upsertMember, loadAllMembers } = useMemberStore()
 
 const routeToMemberRead = (phoneNo: string) => {
   return '/member/read/' + phoneNo
 }
 
-onMounted(() => {
+onMounted(async () => {
   lazyLoadMemberData()
+  totalMembers.value = (await dbPromise.getAllKeys('members')).length
 })
+
+const showAll = async () => {
+  if (members.value.length === totalMembers.value) {
+    return
+  }
+
+  await loadAllMembers()
+}
 
 async function dumpData() {
   for (let i = 1; i <= 200; i++) {
@@ -48,7 +59,18 @@ async function dumpData() {
     <AppButton bgColor="yellow" v-if="route.query.dump === 'true'" @on-click="dumpData"
       >Dump data</AppButton
     >
-    <p class="pb-6">Total members: {{ members.length }}</p>
+
+    <!-- Showing 202 / 202 members.  -->
+    <p class="pb-6 text-sm text-zinc-600 transition">
+      Showing {{ members.length }} / {{ totalMembers }} members.
+      <input
+        v-show="members.length !== totalMembers"
+        type="button"
+        value="Show all"
+        class="underline cursor-pointer"
+        @click="showAll"
+      />
+    </p>
 
     <AppTable v-if="members.length > 0" :headers="headers">
       <tr
