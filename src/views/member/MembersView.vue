@@ -8,10 +8,13 @@ import router from '@/router'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { dbPromise } from '@/services/db'
+import AppFormLabel from '@/components/AppFormLabel.vue'
+import { getCompanyEmail, setCompanyEmail } from '@/services/setting.service'
 
 const route = useRoute()
 const dumpData = route.query.dump === 'true'
 const totalMembers = ref(0)
+const companyEmail = ref('')
 const headers = ['Name', 'Phone No', 'Points']
 const { members, lazyLoadMemberData, upsertMember, loadAllMembers } = useMemberStore()
 
@@ -22,6 +25,7 @@ const routeToMemberRead = (phoneNo: string) => {
 onMounted(async () => {
   lazyLoadMemberData()
   totalMembers.value = (await dbPromise.getAllKeys('members')).length
+  companyEmail.value = (await getCompanyEmail('companyEmail'))?.value.toString() || ''
 })
 
 const showAll = async () => {
@@ -50,6 +54,11 @@ async function handleDumpData() {
     )
   }
   router.go(0)
+}
+
+const onClickUpload = async () => {
+  await setCompanyEmail('companyEmail', companyEmail.value)
+  await useJsonDataStore().sendMembersJson(members.value, companyEmail.value)
 }
 </script>
 <template>
@@ -102,13 +111,25 @@ async function handleDumpData() {
       </tr>
     </AppTable>
   </section>
+
   <section v-else>
     <h1 class="text-4xl font-bold py-6 text-black">JSON Representation</h1>
-    <div class="space-x-4">
-      <AppButton bgColor="white" v-if="dumpData" @on-click="handleDumpData">Dump data</AppButton>
-      <AppButton bgColor="yellow" @on-click="useJsonDataStore().sendMembersJson(members)"
-        >Upload</AppButton
-      >
+    <AppButton bgColor="white" v-if="dumpData" @on-click="handleDumpData">Dump data</AppButton>
+    <div class="p-6 my-4 shadow">
+      <AppFormLabel label="Company email" labelId="companyEmail">
+        <input
+          v-model="companyEmail"
+          type="email"
+          class="mt-1 py-2 md:py-4 px-3 w-full rounded border border-gray-300 shadow text-2xl text-gray-700"
+          placeholder="Company email"
+          autocomplete="email"
+        />
+
+        <ul class="text-gray-400 text-sm list-disc pl-5 mt-1 mb-6" aria-live="polite">
+          <li>So I can remember who are your members</li>
+        </ul>
+        <AppButton bgColor="yellow" @on-click="onClickUpload">Upload</AppButton>
+      </AppFormLabel>
     </div>
 
     <pre>{{ useJsonDataStore().getAllMembersInJson(members) }}</pre>

@@ -1,4 +1,5 @@
 import type { D1Database, D1PreparedStatement } from '@cloudflare/workers-types'
+import type { MemberModel } from './models/member.model'
 
 export interface Env {
   DB: D1Database
@@ -18,12 +19,11 @@ export default {
     }
     if (request.method === 'POST' && url.pathname === '/api/members/bulk') {
       try {
-        const payload = await request.json()
-        if (!Array.isArray(payload)) return new Response('Expected array', { status: 400 })
+        const payload: { companyEmail: string; members: MemberModel[] } = await request.json()
 
         const stmt = await env.DB.prepare(
-          `INSERT INTO members (phoneNo, name, points, createdAt, updatedAt, isDeleted)
-           VALUES (?1, ?2, ?3, ?4, ?5, ?6)
+          `INSERT INTO members (companyEmail, phoneNo, name, points, createdAt, updatedAt, isDeleted)
+           VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
            ON CONFLICT(phoneNo) DO UPDATE SET
              name=excluded.name,
              points=excluded.points,
@@ -33,9 +33,10 @@ export default {
         )
 
         const batch: D1PreparedStatement[] = []
-        for (const m of payload) {
+        for (const m of payload.members) {
           batch.push(
             stmt.bind(
+              payload.companyEmail,
               m.phoneNo,
               m.name || '',
               m.points ?? 0,
