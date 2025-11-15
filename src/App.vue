@@ -19,7 +19,7 @@ const navClass = (path: string) =>
         <div class="wrapper">
         <HelloWorld msg="You did it!" /> 
         -->
-  <div class="bg-white h-dvh flex flex-col font:sans">
+  <div class="bg-white h-dvh grid grid-rows-[auto_1fr_auto] font:sans">
     <header class="border-b border-gray-200 shadow-sm">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
@@ -37,18 +37,17 @@ const navClass = (path: string) =>
         <PwaInstallButton />
       </nav>
     </header>
-    <div class="text-lg h-full bg-white overflow-auto p-4">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="text-lg bg-white p-4 min-h-3/4">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 overflow-y-scroll">
         <RouterView />
       </div>
-
-      <footer class="border-t border-gray-200">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 text-sm text-gray-700">
-          <p class="font-semibold pb-4 text-lg">Membership App 💎</p>
-          <p>Created by Teng Xing 💪</p>
-        </div>
-      </footer>
     </div>
+    <footer class="border-t border-gray-200">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 text-sm text-gray-700">
+        <p class="font-semibold pb-4 text-lg">Membership App 💎</p>
+        <p>Created by Teng Xing 💪</p>
+      </div>
+    </footer>
   </div>
 </template>
 
