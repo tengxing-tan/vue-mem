@@ -2,7 +2,7 @@ import type { D1Database, D1PreparedStatement } from '@cloudflare/workers-types'
 import type { MemberModel } from './models/member.model'
 
 export interface Env {
-  DB: D1Database
+  D1_VUE_MEM: D1Database
 }
 
 export default {
@@ -21,7 +21,7 @@ export default {
       try {
         const payload: { companyEmail: string; members: MemberModel[] } = await request.json()
 
-        const stmt = await env.DB.prepare(
+        const stmt = await env.D1_VUE_MEM.prepare(
           `INSERT INTO members (companyEmail, phoneNo, name, points, createdAt, updatedAt, isDeleted)
            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
            ON CONFLICT(phoneNo) DO UPDATE SET
@@ -47,7 +47,7 @@ export default {
           )
         }
 
-        if (batch.length) await env.DB.batch(batch)
+        if (batch.length) await env.D1_VUE_MEM.batch(batch)
 
         return new Response(JSON.stringify({ stored: batch.length }), {
           status: 200,

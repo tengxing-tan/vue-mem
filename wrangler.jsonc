@@ -1,8 +1,16 @@
 {
   "name": "vue-mem",
   "compatibility_date": "2025-06-29",
+  "main": "src/worker.ts",
   "assets": {
     "directory": "./dist",
     "not_found_handling": "single-page-application",
   },
+  "d1_databases": [
+    {
+      "binding": "D1_VUE_MEM",
+      "database_name": "d1-vue-mem",
+      "database_id": "b9625705-d4e6-41d4-8e4f-c15cf063819f",
+    },
+  ],
 }
