@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { memberRoutes } from './member.route'
 import PointView from '@/views/point/PointView.vue'
+import { pointRoutes } from './point.route'
+import { rewardRoutes } from './reward.route'
 
 const routes = [
   {
@@ -10,18 +12,8 @@ const routes = [
     component: PointView,
   },
   ...memberRoutes,
-  {
-    path: '/point',
-    name: 'point',
-    meta: { title: 'Point' },
-    component: PointView,
-  },
-  {
-    path: '/point/history',
-    name: 'pointHistory',
-    meta: { title: 'Point History' },
-    component: () => import('@/views/point/PointHistory.vue'),
-  },
+  ...pointRoutes,
+  ...rewardRoutes,
 ]
 
 const router = createRouter({

@@ -30,6 +30,9 @@ const navClass = (path: string) =>
             <RouterLink to="/members">
               <span :class="navClass('/member')">💎Members</span>
             </RouterLink>
+            <RouterLink to="/reward">
+              <span :class="navClass('/reward')">🎁Rewards</span>
+            </RouterLink>
           </div>
         </div>
       </div>
