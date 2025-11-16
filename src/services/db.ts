@@ -1,10 +1,11 @@
 import { openDB } from 'idb'
 
-export const dbPromise = await openDB('tengxingCoolApp', 5, {
+export const dbPromise = await openDB('tengxingCoolApp', 6, {
   upgrade(db, oldVersion, newVersion, transaction) {
     members()
     points()
     settings()
+    rewards()
 
     function members(): void {
       if (!db.objectStoreNames.contains('members')) {
@@ -37,6 +38,13 @@ export const dbPromise = await openDB('tengxingCoolApp', 5, {
     function settings(): void {
       if (!db.objectStoreNames.contains('settings')) {
         db.createObjectStore('settings', { keyPath: 'key' })
+        return
+      }
+    }
+
+    function rewards(): void {
+      if (!db.objectStoreNames.contains('rewards')) {
+        db.createObjectStore('rewards', { keyPath: 'id', autoIncrement: true })
         return
       }
     }
