@@ -55,7 +55,7 @@ function closeModal() {
       </div>
     </AppModal>
 
-    <div class="flex justify-between">
+    <div class="flex justify-between items-center">
       <h1 class="text-4xl font-bold py-6 text-black">Add Points</h1>
       <RouterLink to="/point/history">
         <AppButton type="button" bg-color="yellow">Full History</AppButton>
