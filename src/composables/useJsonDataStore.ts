@@ -1,7 +1,7 @@
 import type { MemberModel } from '@/models/member.model'
 
 export function useJsonDataStore() {
-  const getAllMembersInJson = (data: MemberModel[]) => JSON.stringify(data, null, 2)
+  const serializeJsonData = <T>(data: T[]) => JSON.stringify(data, null, 2)
 
   const sendMembersJson = async (
     data: MemberModel[],
@@ -18,5 +18,5 @@ export function useJsonDataStore() {
     return await res.json()
   }
 
-  return { getAllMembersInJson, sendMembersJson }
+  return { serializeJsonData, sendMembersJson }
 }

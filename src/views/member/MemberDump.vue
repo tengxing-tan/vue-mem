@@ -89,6 +89,6 @@ const onClickUpload = async (): Promise<void> => {
         >
       </AppFormLabel>
     </div>
-    <pre>{{ useJsonDataStore().getAllMembersInJson(members) }}</pre>
+    <pre>{{ useJsonDataStore().serializeJsonData(members) }}</pre>
   </section>
 </template>
