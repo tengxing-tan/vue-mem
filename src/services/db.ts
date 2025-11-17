@@ -1,3 +1,4 @@
+import { DbObjectStore } from '@/enums/DbObjectStore'
 import { openDB } from 'idb'
 
 export const dbPromise = await openDB('tengxingCoolApp', 6, {
@@ -8,43 +9,43 @@ export const dbPromise = await openDB('tengxingCoolApp', 6, {
     rewards()
 
     function members(): void {
-      if (!db.objectStoreNames.contains('members')) {
-        db.createObjectStore('members', { keyPath: 'phoneNo' }).createIndex(
+      if (!db.objectStoreNames.contains(DbObjectStore.Members)) {
+        db.createObjectStore(DbObjectStore.Members, { keyPath: 'phoneNo' }).createIndex(
           'updatedAtIdx',
           'updatedAt',
         )
         return
       }
 
-      if (!transaction.objectStore('members').indexNames.contains('updatedAtIdx')) {
-        transaction.objectStore('members').createIndex('updatedAtIdx', 'updatedAt')
+      if (!transaction.objectStore(DbObjectStore.Members).indexNames.contains('updatedAtIdx')) {
+        transaction.objectStore(DbObjectStore.Members).createIndex('updatedAtIdx', 'updatedAt')
       }
     }
 
     function points(): void {
-      if (!db.objectStoreNames.contains('points')) {
-        db.createObjectStore('points', { keyPath: 'id', autoIncrement: true }).createIndex(
-          'createdAtIdx',
-          'createdAt',
-        )
+      if (!db.objectStoreNames.contains(DbObjectStore.Points)) {
+        db.createObjectStore(DbObjectStore.Points, {
+          keyPath: 'id',
+          autoIncrement: true,
+        }).createIndex('createdAtIdx', 'createdAt')
         return
       }
 
-      if (!transaction.objectStore('points').indexNames.contains('createdAtIdx')) {
-        transaction.objectStore('points').createIndex('createdAtIdx', 'createdAt')
+      if (!transaction.objectStore(DbObjectStore.Points).indexNames.contains('createdAtIdx')) {
+        transaction.objectStore(DbObjectStore.Points).createIndex('createdAtIdx', 'createdAt')
       }
     }
 
     function settings(): void {
-      if (!db.objectStoreNames.contains('settings')) {
-        db.createObjectStore('settings', { keyPath: 'key' })
+      if (!db.objectStoreNames.contains(DbObjectStore.Settings)) {
+        db.createObjectStore(DbObjectStore.Settings, { keyPath: 'key' })
         return
       }
     }
 
     function rewards(): void {
-      if (!db.objectStoreNames.contains('rewards')) {
-        db.createObjectStore('rewards', { keyPath: 'id', autoIncrement: true })
+      if (!db.objectStoreNames.contains(DbObjectStore.Rewards)) {
+        db.createObjectStore(DbObjectStore.Rewards, { keyPath: 'id', autoIncrement: true })
         return
       }
     }

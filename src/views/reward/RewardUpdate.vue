@@ -1,18 +1,32 @@
 <script setup lang="ts">
 import AppButton from '@/components/AppButton.vue'
 import AppFormLabel from '@/components/AppFormLabel.vue'
-import { create } from '@/services/reward.service'
-import { toRaw } from 'vue'
 import RewardCategoryOptions from './RewardCategoryOptions.vue'
-import router from '@/router'
 import { useRewardStore } from '@/composables/useRewardStore'
+import type { RewardModel } from '@/models/reward.model'
+import { onMounted, toRaw } from 'vue'
+import { dbPromise } from '@/services/db'
+import { DbObjectStore } from '@/enums/DbObjectStore'
+
+const props = defineProps<{
+  rewardData?: RewardModel
+}>()
+
+const emit = defineEmits<{
+  (e: 'updateReward', value: RewardModel): void
+}>()
 
 const { isValid, reward } = useRewardStore()
 
-const createReward = async () => {
+onMounted(() => {
+  if (!props.rewardData) return
+  reward.value = { ...props.rewardData }
+})
+
+const updateReward = async () => {
   if (!isValid.value) return
-  const rewardId = await create(toRaw(reward.value))
-  router.push('/reward/' + rewardId)
+  await dbPromise.put(DbObjectStore.Rewards, toRaw(reward.value))
+  emit('updateReward', reward.value)
 }
 </script>
 
@@ -20,7 +34,7 @@ const createReward = async () => {
   <section>
     <h1 class="text-4xl font-bold py-6 text-black">Rewards</h1>
 
-    <form @submit.prevent="createReward">
+    <form @submit.prevent="updateReward">
       <div class="pb-6 flex flex-col gap-4">
         <!-- name -->
         <AppFormLabel label="Reward name" labelId="name">
@@ -30,7 +44,7 @@ const createReward = async () => {
               type="text"
               class="mt-1 py-2 md:py-4 px-3 w-full rounded border border-gray-300 shadow text-2xl text-gray-700"
               minlength="3"
-              required
+              autofocus
             />
             <span class="validation"></span>
           </div>
@@ -83,7 +97,7 @@ const createReward = async () => {
           />
         </AppFormLabel>
       </div>
-      <AppButton :bg-color="isValid ? 'green' : 'gray'" @on-click="createReward">Create</AppButton>
+      <AppButton :bg-color="isValid ? 'green' : 'gray'" @on-click="updateReward">OK</AppButton>
     </form>
   </section>
 </template>

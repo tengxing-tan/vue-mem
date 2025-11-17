@@ -11,4 +11,11 @@ export const rewardRoutes = [
     meta: { title: 'Reward Create' },
     component: () => import('@/views/reward/RewardCreate.vue'),
   },
+  {
+    path: '/reward/:rewardId',
+    name: 'rewardRead',
+    meta: { title: 'Reward Read' },
+    component: () => import('@/views/reward/RewardRead.vue'),
+    props: true,
+  },
 ]
