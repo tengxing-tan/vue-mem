@@ -3,28 +3,44 @@ import AppButton from '@/components/AppButton.vue'
 import AppFormLabel from '@/components/AppFormLabel.vue'
 import { useCompanyStore } from '@/composables/useCompanyStore'
 import { useJsonDataStore } from '@/composables/useJsonDataStore'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
-const companyEmail = ref('')
+const companyEmail = ref(useCompanyStore().getCompanyEmail() ?? '')
+const companyId = useCompanyStore().getCompanyId() ?? 0
 const uploadResultMsg = ref('')
 
+onMounted(() => {
+  if (companyEmail.value.length > 0) {
+    uploadResultMsg.value = '👍Email loaded.'
+  }
+})
+
 const onClickUpload = async (): Promise<void> => {
+  if (companyId > 0) {
+    return
+  }
+
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(companyEmail.value)
   if (!isEmailValid) {
     uploadResultMsg.value = '📧Please enter a valid email address.'
     return
   }
 
-  const data = { email: companyEmail.value }
-  const result = await useJsonDataStore().postAction('/api/company', data)
-  if (isNaN(result.id)) {
-    uploadResultMsg.value = '💤Upload failed. Please try again later.'
-    return
-  }
+  try {
+    const data = { email: companyEmail.value }
+    const result = await useJsonDataStore().postAction('/api/company', data)
 
-  useCompanyStore().setCompanyEmail(companyEmail.value)
-  useCompanyStore().setCompanyId(result.id)
-  uploadResultMsg.value = '👍Upload successful!'
+    if (isNaN(result.id)) {
+      uploadResultMsg.value = '💤Upload failed. Please try again later.'
+      return
+    }
+
+    useCompanyStore().setCompanyEmail(companyEmail.value)
+    useCompanyStore().setCompanyId(result.id)
+    uploadResultMsg.value = '👍Upload successful!'
+  } catch {
+    uploadResultMsg.value = '💤Upload failed. Please try again later.'
+  }
 }
 </script>
 
@@ -44,10 +60,19 @@ const onClickUpload = async (): Promise<void> => {
 
         <ul class="text-gray-400 text-sm list-disc pl-5 mt-1 mb-6" aria-live="polite">
           <li>So I can remember who are your members</li>
-          <li class="text-base text-gray-600">{{ uploadResultMsg }}</li>
+          <li v-if="uploadResultMsg.length > 0" class="text-base text-gray-600">
+            {{ uploadResultMsg }}
+          </li>
         </ul>
 
-        <AppButton type="submit" bgColor="yellow" @on-click="onClickUpload"> Upload</AppButton>
+        <AppButton
+          type="submit"
+          :bgColor="companyId > 0 ? 'gray' : 'yellow'"
+          @on-click="onClickUpload"
+          :disabled="companyId > 0"
+        >
+          Upload</AppButton
+        >
       </AppFormLabel>
     </div>
   </section>
