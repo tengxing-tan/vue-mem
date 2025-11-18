@@ -3,6 +3,7 @@ import AppButton from '@/components/AppButton.vue'
 import AppFormLabel from '@/components/AppFormLabel.vue'
 import { useCompanyStore } from '@/composables/useCompanyStore'
 import { useJsonDataStore } from '@/composables/useJsonDataStore'
+import router from '@/router'
 import { onMounted, ref } from 'vue'
 
 const companyEmail = ref(useCompanyStore().getCompanyEmail() ?? '')
@@ -37,7 +38,7 @@ const onClickUpload = async (): Promise<void> => {
 
     useCompanyStore().setCompanyEmail(companyEmail.value)
     useCompanyStore().setCompanyId(result.id)
-    uploadResultMsg.value = '👍Upload successful!'
+    uploadResultMsg.value = '👍Upload successful! Please refresh page.'
   } catch {
     uploadResultMsg.value = '💤Upload failed. Please try again later.'
   }
@@ -65,14 +66,20 @@ const onClickUpload = async (): Promise<void> => {
           </li>
         </ul>
 
-        <AppButton
-          type="submit"
-          :bgColor="companyId > 0 ? 'gray' : 'yellow'"
-          @on-click="onClickUpload"
-          :disabled="companyId > 0"
-        >
-          Upload</AppButton
-        >
+        <div class="space-x-4">
+          <AppButton
+            type="submit"
+            :bgColor="companyId > 0 ? 'gray' : 'yellow'"
+            @on-click="onClickUpload"
+            :disabled="companyId > 0"
+          >
+            Upload</AppButton
+          >
+
+          <AppButton v-show="uploadResultMsg.length > 0" @on-click="() => router.go(0)"
+            >Refresh</AppButton
+          >
+        </div>
       </AppFormLabel>
     </div>
   </section>

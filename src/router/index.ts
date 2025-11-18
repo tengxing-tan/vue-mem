@@ -1,16 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { memberRoutes } from './member.route'
-import PointView from '@/views/point/PointView.vue'
 import { pointRoutes } from './point.route'
 import { rewardRoutes } from './reward.route'
 import CompanyView from '@/views/company/CompanyView.vue'
+import HomeView from '@/views/HomeView.vue'
 
 const routes = [
   {
     path: '/',
     name: 'home',
     meta: { title: 'Home' },
-    component: PointView,
+    component: HomeView,
   },
   {
     path: '/company',

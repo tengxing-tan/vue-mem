@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import PwaInstallButton from './components/PwaInstallButton.vue'
-
 import { useRoute } from 'vue-router'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import { useCompanyStore } from './composables/useCompanyStore'
 
 const route = useRoute()
 const currentPath = computed(() => route.path)
@@ -11,6 +10,8 @@ const currentPath = computed(() => route.path)
 const isActive = (path: string) => currentPath.value.startsWith(path)
 const navClass = (path: string) =>
   isActive(path) && 'underline underline-offset-4 decoration-2 decoration-sky-400'
+
+const companyId = ref(useCompanyStore().getCompanyId() ?? 0)
 </script>
 
 <template>
@@ -23,7 +24,7 @@ const navClass = (path: string) =>
     <header class="border-b border-gray-200 shadow-sm">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
-          <div class="flex items-center gap-2 text-lg text-gray-800">
+          <div v-if="companyId > 0" class="flex items-center gap-2 text-lg text-gray-800">
             <RouterLink to="/point">
               <span :class="navClass('/point')">🍄Points</span>
             </RouterLink>
@@ -34,11 +35,13 @@ const navClass = (path: string) =>
               <span :class="navClass('/reward')">🎁Rewards</span>
             </RouterLink>
           </div>
+          <div v-else class="flex items-center gap-2 text-lg text-gray-800">
+            <RouterLink to="/home">
+              <span :class="navClass('/home')">Home</span>
+            </RouterLink>
+          </div>
         </div>
       </div>
-      <nav>
-        <PwaInstallButton />
-      </nav>
     </header>
     <div class="text-lg bg-white p-4 pb-28 min-h-3/4">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
