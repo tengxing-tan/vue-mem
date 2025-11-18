@@ -53,3 +53,9 @@ rm -rf node_modules && rm package-lock.json && npm install && npm run build
     main: "main": "src/worker.ts",
 }
 ```
+
+### Wrangle CLI
+
+```sh
+npx wrangler d1 execute d1-vue-mem --remote --file=./migrations/members.sql
+```

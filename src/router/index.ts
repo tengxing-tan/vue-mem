@@ -3,6 +3,7 @@ import { memberRoutes } from './member.route'
 import PointView from '@/views/point/PointView.vue'
 import { pointRoutes } from './point.route'
 import { rewardRoutes } from './reward.route'
+import CompanyView from '@/views/company/CompanyView.vue'
 
 const routes = [
   {
@@ -10,6 +11,12 @@ const routes = [
     name: 'home',
     meta: { title: 'Home' },
     component: PointView,
+  },
+  {
+    path: '/company',
+    name: 'companyHome',
+    meta: { title: 'Company Home' },
+    component: CompanyView,
   },
   ...memberRoutes,
   ...pointRoutes,

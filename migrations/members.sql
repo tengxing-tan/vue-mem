@@ -1,9 +1,12 @@
+DROP TABLE IF EXISTS members;
 CREATE TABLE IF NOT EXISTS members (
-  companyEmail TEXT NULL,
-  phoneNo VARCHAR(20) PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  companyId INTEGER NOT NULL,
+  phoneNo VARCHAR(20) UNIQUE,
   name TEXT,
   points INTEGER NOT NULL DEFAULT 0,
   createdAt TEXT NOT NULL DEFAULT (datetime('now')),
   updatedAt TEXT NOT NULL DEFAULT (datetime('now')),
-  isDeleted INTEGER NOT NULL DEFAULT 0
+  isDeleted INTEGER NOT NULL DEFAULT 0,
+  FOREIGN KEY (companyId) REFERENCES companies(id) ON DELETE CASCADE
 );

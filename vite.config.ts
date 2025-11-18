@@ -12,4 +12,14 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8787',
+        changeOrigin: true,
+        // If backend sets its own host-based routing:
+        // rewrite: (path) => path
+      },
+    },
+  },
 })

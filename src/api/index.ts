@@ -10,8 +10,15 @@ export interface Env {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     onFetchInit()
+
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { status: 204, headers: env.corsHeaders })
+    }
+
     const url = new URL(request.url)
-    const apiRoute: ApiRoute | undefined = apiRoutes.find((r) => r.pathName === url.pathname)
+    const apiRoute: ApiRoute | undefined = apiRoutes.find(
+      (r) => r.pathName === url.pathname && r.method === request.method,
+    )
 
     if (!apiRoute) return env.httpNotFound
     return apiRoute.handler(env, request)
@@ -24,10 +31,6 @@ export default {
         'Access-Control-Allow-Headers': 'Content-Type',
       }
       env.httpNotFound = new Response('Not found', { status: 404, headers: env.corsHeaders })
-
-      if (request.method === 'OPTIONS') {
-        return new Response(null, { status: 204, headers: env.corsHeaders })
-      }
     }
   },
 }

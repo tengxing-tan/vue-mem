@@ -6,12 +6,16 @@ import { toRaw } from 'vue'
 import RewardCategoryOptions from './RewardCategoryOptions.vue'
 import router from '@/router'
 import { useRewardStore } from '@/composables/useRewardStore'
+import { useJsonDataStore } from '@/composables/useJsonDataStore'
+import type { RewardModel } from '@/models/reward.model'
 
 const { isValid, reward } = useRewardStore()
 
 const createReward = async () => {
   if (!isValid.value) return
+
   const rewardId = await create(toRaw(reward.value))
+  await useJsonDataStore().bulkInsert<RewardModel>([toRaw(reward.value)])
   router.push('/reward/' + rewardId)
 }
 </script>

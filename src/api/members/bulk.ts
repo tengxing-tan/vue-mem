@@ -1,5 +1,6 @@
 import type { MemberModel } from '@/models/member.model'
 import type { Env } from '..'
+import { executeBatch, prepareMemberUpserts } from './helpers'
 
 interface MemberBatchPayload {
   companyEmail: string
@@ -7,39 +8,16 @@ interface MemberBatchPayload {
 }
 
 export async function handleMemberBatch(env: Env, request: Request): Promise<Response> {
-  if (request.method !== 'POST') return env.httpNotFound
-
   try {
     const payload: MemberBatchPayload = await request.json()
-    const stmt = env.D1_VUE_MEM.prepare(
-      `INSERT INTO members (companyEmail, phoneNo, name, points, createdAt, updatedAt, isDeleted)
-           VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
-           ON CONFLICT(phoneNo) DO UPDATE SET
-             name=excluded.name,
-             points=excluded.points,
-             createdAt=members.createdAt,
-             updatedAt=excluded.updatedAt,
-             isDeleted=excluded.isDeleted`,
-    )
-
-    const batch: D1PreparedStatement[] = []
-    for (const m of payload.members) {
-      batch.push(
-        stmt.bind(
-          payload.companyEmail,
-          m.phoneNo,
-          m.name || '',
-          m.points ?? 0,
-          new Date(m.createdAt || new Date()).toISOString(),
-          new Date(m.updatedAt || new Date()).toISOString(),
-          m.isDeleted ? 1 : 0,
-        ),
-      )
+    if (!payload.companyEmail || !Array.isArray(payload.members)) {
+      return new Response('Invalid payload', { status: 400, headers: env.corsHeaders })
     }
 
-    if (batch.length) await env.D1_VUE_MEM.batch(batch)
+    const statements = prepareMemberUpserts(env, payload.companyEmail, payload.members)
+    await executeBatch(env, statements)
 
-    return new Response(JSON.stringify({ stored: batch.length }), {
+    return new Response(JSON.stringify({ stored: statements.length }), {
       status: 200,
       headers: { 'Content-Type': 'application/json', ...env.corsHeaders },
     })
