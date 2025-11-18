@@ -6,7 +6,7 @@ import type { RewardUpsert } from './rewardUpsert'
  * Reusable anywhere you need to batch member writes.
  */
 export function prepareRewardUpserts(env: Env, rewards: RewardUpsert[]): D1PreparedStatement[] {
-  const columns = [
+  const columnsUpsert = [
     'name',
     'companyId',
     'points',
@@ -15,9 +15,9 @@ export function prepareRewardUpserts(env: Env, rewards: RewardUpsert[]): D1Prepa
     'validUntil',
     'description',
   ]
-  const valuesPlaceholders = columns.map((_, index) => `?${index + 1}`).join(', ')
+  const valuesPlaceholders = columnsUpsert.map((_, index) => `?${index + 1}`).join(', ')
   const stmt = env.D1_VUE_MEM.prepare(
-    `INSERT INTO main.rewards (${columns.join(', ')})
+    `INSERT INTO main.rewards (${columnsUpsert.join(', ')})
      VALUES(${valuesPlaceholders}) RETURNING id`,
   )
 

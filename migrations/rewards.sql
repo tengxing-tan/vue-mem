@@ -13,4 +13,5 @@ CREATE TABLE IF NOT EXISTS rewards (
 );
 
 CREATE INDEX IF NOT EXISTS rewards_companyId_idx ON rewards(companyId);
-CREATE INDEX IF NOT EXISTS rewards_validFrom_idx ON rewards(validFrom);
+CREATE INDEX IF NOT EXISTS rewards_validFrom_idx ON rewards(validFrom DESC);
+CREATE INDEX IF NOT EXISTS rewards_validUntil_idx ON rewards(validUntil DESC);
