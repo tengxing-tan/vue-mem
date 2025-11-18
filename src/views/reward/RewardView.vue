@@ -1,17 +1,14 @@
 <script setup lang="ts">
 import AppButton from '@/components/AppButton.vue'
 import AppProductCard from '@/components/AppProductCard.vue'
-import { useJsonDataStore } from '@/composables/useJsonDataStore'
 import { DbObjectStore } from '@/enums/DbObjectStore'
 import type { RewardModel } from '@/models/reward.model'
 import { dbPromise } from '@/services/db'
 import { ref } from 'vue'
 
-const rewardsInJson = ref('')
 const showingRewards = ref<RewardModel[]>([])
 
 dbPromise.getAll(DbObjectStore.Rewards).then((rewards: RewardModel[]) => {
-  rewardsInJson.value = useJsonDataStore().serializeJsonData(rewards)
   showingRewards.value = rewards
 })
 </script>
@@ -34,6 +31,5 @@ dbPromise.getAll(DbObjectStore.Rewards).then((rewards: RewardModel[]) => {
         :link="`/reward/${reward.id}`"
       />
     </div>
-    <pre>{{ rewardsInJson }}</pre>
   </section>
 </template>
