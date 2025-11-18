@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { memberRoutes } from './member.route'
 import { pointRoutes } from './point.route'
 import { rewardRoutes } from './reward.route'
-import CompanyView from '@/views/company/CompanyView.vue'
 import HomeView from '@/views/HomeView.vue'
 
 const routes = [
@@ -16,7 +15,7 @@ const routes = [
     path: '/company',
     name: 'companyHome',
     meta: { title: 'Company Home' },
-    component: CompanyView,
+    component: () => import('@/views/company/CompanyView.vue'),
   },
   ...memberRoutes,
   ...pointRoutes,
