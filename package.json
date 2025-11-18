@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "run-p type-check \"build-only {@}\" --",
-    "dev:worker": "wrangler dev src/worker.ts",
+    "dev:worker": "wrangler dev src/api/index.ts",
     "lint": "eslint . --fix",
     "build-only": "vite build",
     "dev": "vite",
