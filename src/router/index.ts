@@ -7,6 +7,7 @@ import HomeView from '@/views/HomeView.vue'
 const routes = [
   {
     path: '/',
+    alias: ['/home'],
     name: 'home',
     meta: { title: 'Home' },
     component: HomeView,
@@ -20,6 +21,10 @@ const routes = [
   ...memberRoutes,
   ...pointRoutes,
   ...rewardRoutes,
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: { name: 'home' },
+  },
 ]
 
 const router = createRouter({

@@ -3,6 +3,7 @@ import { RouterLink, RouterView } from 'vue-router'
 import { useRoute } from 'vue-router'
 import { computed, ref } from 'vue'
 import { useCompanyStore } from './composables/useCompanyStore'
+import HomeView from './views/HomeView.vue'
 
 const route = useRoute()
 const currentPath = computed(() => route.path)
@@ -20,11 +21,14 @@ const companyId = ref(useCompanyStore().getCompanyId() ?? 0)
         <div class="wrapper">
         <HelloWorld msg="You did it!" /> 
         -->
-  <div class="bg-white h-dvh grid grid-rows-[auto_1fr_auto] font:sans">
+  <div v-if="companyId <= 0 && !isActive('/company')">
+    <HomeView />
+  </div>
+  <div v-else class="bg-white h-dvh grid grid-rows-[auto_1fr_auto] font:sans">
     <header class="border-b border-gray-200 shadow-sm">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
-          <div v-if="companyId > 0" class="flex items-center gap-2 text-lg text-gray-800">
+          <div class="flex items-center gap-2 text-lg text-gray-800">
             <RouterLink to="/point">
               <span :class="navClass('/point')">🍄Points</span>
             </RouterLink>
@@ -33,11 +37,6 @@ const companyId = ref(useCompanyStore().getCompanyId() ?? 0)
             </RouterLink>
             <RouterLink to="/reward">
               <span :class="navClass('/reward')">🎁Rewards</span>
-            </RouterLink>
-          </div>
-          <div v-else class="flex items-center gap-2 text-lg text-gray-800">
-            <RouterLink to="/home">
-              <span :class="navClass('/home')">Home</span>
             </RouterLink>
           </div>
         </div>

@@ -4,7 +4,8 @@ export async function getRewards(env: Env, request: Request): Promise<Response> 
   try {
     if (!request) return new Response()
     const { results } = await env.D1_VUE_MEM.prepare(
-      `SELECT 
+      `SELECT
+        id,
         name,
         points,
         category,
