@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS rewards (
   companyId INTEGER NOT NULL,
   name TEXT NOT NULL,
   description TEXT,
+  imageUrl TEXT,
   points INTEGER NOT NULL DEFAULT 0,
   category INTEGER NOT NULL DEFAULT 1, -- maps to RewardCategory enum
   validFrom TEXT NULL,
@@ -11,7 +12,3 @@ CREATE TABLE IF NOT EXISTS rewards (
   updatedAt TEXT NOT NULL DEFAULT (datetime('now')),
   FOREIGN KEY (companyId) REFERENCES companies(id) ON DELETE CASCADE
 );
-
-CREATE INDEX IF NOT EXISTS rewards_companyId_idx ON rewards(companyId);
-CREATE INDEX IF NOT EXISTS rewards_validFrom_idx ON rewards(validFrom DESC);
-CREATE INDEX IF NOT EXISTS rewards_validUntil_idx ON rewards(validUntil DESC);

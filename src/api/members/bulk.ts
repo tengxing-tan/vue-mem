@@ -3,18 +3,17 @@ import type { Env } from '..'
 import { executeBatch, prepareMemberUpserts } from './helpers'
 
 interface MemberBatchPayload {
-  companyEmail: string
   members: MemberModel[]
 }
 
 export async function handleMemberBatch(env: Env, request: Request): Promise<Response> {
   try {
     const payload: MemberBatchPayload = await request.json()
-    if (!payload.companyEmail || !Array.isArray(payload.members)) {
+    if (!Array.isArray(payload.members)) {
       return new Response('Invalid payload', { status: 400, headers: env.corsHeaders })
     }
 
-    const statements = prepareMemberUpserts(env, payload.companyEmail, payload.members)
+    const statements = prepareMemberUpserts(env, payload.members)
     await executeBatch(env, statements)
 
     return new Response(JSON.stringify({ stored: statements.length }), {

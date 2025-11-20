@@ -6,28 +6,24 @@ import { useClientStore } from './useClientStore'
 import type { MemberGet } from '@/models/member-get.model'
 import { useMemberPhoneNoStore } from '@/composables/useMemberPhoneNoStore'
 
-const emit = defineEmits<{
-  (e: 'phoneNoFound', value: null): void
-}>()
-
 const { setMemberPhoneNo } = useMemberPhoneNoStore()
 const { findPhoneNo } = useClientStore()
 
 const phoneNo = ref('')
 const isPhoneNoValid = computed(() => /^\d{10,15}$/.test(phoneNo.value))
-const notFound = ref(false)
+const resultMessage = ref('')
 
 const onFind = async () => {
   if (!isPhoneNoValid.value) return
 
   const member: MemberGet = await findPhoneNo(phoneNo.value)
   if (!member || member.isDeleted) {
-    notFound.value = true
+    resultMessage.value = '❌ Not found'
     return
   }
 
   setMemberPhoneNo(member.phoneNo)
-  emit('phoneNoFound', null)
+  resultMessage.value = '✅ Found'
 }
 </script>
 
@@ -54,7 +50,9 @@ const onFind = async () => {
         <AppButton type="submit" :bgColor="isPhoneNoValid ? 'amber' : 'zinc'" @onClick="onFind"
           >Find</AppButton
         >
-        <p v-show="isPhoneNoValid && notFound" class="text-rose-400 font-semibold">❌ Not found!</p>
+        <p v-show="isPhoneNoValid && resultMessage !== ''" class="text-zinc-700 font-semibold">
+          {{ resultMessage }}
+        </p>
       </div>
     </form>
   </div>

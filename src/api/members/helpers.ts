@@ -5,16 +5,10 @@ import type { MemberModel } from '@/models/member.model'
  * Prepares upsert statements for members.
  * Reusable anywhere you need to batch member writes.
  */
-export function prepareMemberUpserts(
-  env: Env,
-  companyEmail: string,
-  members: MemberModel[],
-): D1PreparedStatement[] {
-  if (!companyEmail) return []
-
+export function prepareMemberUpserts(env: Env, members: MemberModel[]): D1PreparedStatement[] {
   const stmt = env.D1_VUE_MEM.prepare(
-    `INSERT INTO members (companyEmail, phoneNo, name, points, createdAt, updatedAt, isDeleted)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+    `INSERT INTO members (phoneNo, name, points, createdAt, updatedAt, isDeleted)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6)
      ON CONFLICT(phoneNo) DO UPDATE SET
        name=excluded.name,
        points=excluded.points,
@@ -28,7 +22,6 @@ export function prepareMemberUpserts(
     if (!m.phoneNo) continue
     batch.push(
       stmt.bind(
-        companyEmail,
         m.phoneNo,
         m.name || '',
         m.points ?? 0,

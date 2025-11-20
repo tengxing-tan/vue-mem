@@ -18,6 +18,12 @@ const routes = [
     meta: { title: 'Company Home' },
     component: () => import('@/views/company/CompanyView.vue'),
   },
+  {
+    path: '/redemptions',
+    name: 'redemptions',
+    meta: { title: 'Redemptions' },
+    component: () => import('@/views/redeem/redemptionView.vue'),
+  },
   ...memberRoutes,
   ...pointRoutes,
   ...rewardRoutes,

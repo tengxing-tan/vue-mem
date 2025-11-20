@@ -2,6 +2,8 @@ import type { Env } from '.'
 import { createCompany } from './companies'
 import { handleMemberBatch } from './members/bulk'
 import { getMember } from './members/getMember'
+import { getPendingRedemption } from './redemptions/getPendingRedemptions'
+import { setRedemptionRequest } from './redemptions/setRedeemRequest'
 import { handleRewardBatch } from './rewards/bulk'
 import { getRewards } from './rewards/getReward'
 
@@ -31,6 +33,17 @@ export const apiRoutes: ApiRoute[] = [
     pathName: '/api/rewards/bulk',
     method: 'POST',
     handler: handleRewardBatch,
+  },
+  {
+    pathName: '/api/redemption/request',
+    method: 'POST',
+    handler: setRedemptionRequest,
+  },
+
+  {
+    pathName: '/api/redemptions/pending',
+    method: 'GET',
+    handler: getPendingRedemption,
   },
   {
     pathName: '/api/company',

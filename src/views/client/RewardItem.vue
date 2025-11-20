@@ -3,6 +3,9 @@ import { useMemberPhoneNoStore } from '@/composables/useMemberPhoneNoStore'
 import type { RewardModel } from '@/models/reward.model'
 import { ref } from 'vue'
 import PhoneNo from './PhoneNo.vue'
+import AppModal from '@/components/AppModal.vue'
+import { useClientStore } from './useClientStore'
+import { RedemptionStatus } from '@/enums/RedemptionStatus'
 
 const props = defineProps<RewardModel>()
 const emit = defineEmits<{
@@ -10,32 +13,45 @@ const emit = defineEmits<{
 }>()
 
 const { getMemberPhoneNo } = useMemberPhoneNoStore()
+const { requestRedemption } = useClientStore()
 const isShowPhoneNo = ref(false)
-const redeemButtonText = ref('REDEEM NOW')
+const redeemed = ref(false)
 
-const onRedeem = () => {
-  if (!getMemberPhoneNo()) {
+const onRedeem = async () => {
+  const phoneNo = getMemberPhoneNo()
+  if (!phoneNo) {
     isShowPhoneNo.value = true
     return
   }
 
-  // send redeem request
-  redeemButtonText.value = 'SENT REDEEM REQUEST'
+  // proceed to request redeem
+  if (!props.id) return
+  const bodaoyPayload = {
+    rewardId: props.id,
+    phoneNo: phoneNo,
+    status: RedemptionStatus.Pending,
+  }
+  const response = await requestRedemption(bodaoyPayload)
+  const result: { id?: string } = await response.json()
+  if (!result.id) {
+    alert('Failed to request redeem. Please try again later.')
+  }
+
+  redeemed.value = true
 }
 </script>
 
 <template>
   <div class="bg-white">
+    <AppModal v-show="redeemed" title=" Sent redeem request ✅ " @ok="redeemed = false">
+      <p class="text-zinc-700">Please check with counter</p>
+    </AppModal>
     <div class="pl-2 align-baseline text-md w-max cursor-pointer" @click="emit('backHome', null)">
       <i class="ri-arrow-left-s-line"></i> Back home
     </div>
-    <PhoneNo v-show="isShowPhoneNo" @phone-no-found="isShowPhoneNo = false" />
+    <PhoneNo v-show="isShowPhoneNo" @phone-no-found="onRedeem" />
     <div v-show="!isShowPhoneNo" class="overflow-y-scroll pb-28">
-      <img
-        src="/public/img/amigos/ckickenchopspaghetti.jpg"
-        alt=""
-        class="inset-0 w-full object-cover"
-      />
+      <img src="/img/amigos/ckickenchopspaghetti.jpg" alt="" class="inset-0 w-full object-cover" />
       <div class="py-6 px-4">
         <h1 class="text-2xl font-semibold font-sans text-zinc-900">{{ props.name }}</h1>
         <p class="text-zinc-500">
@@ -54,7 +70,7 @@ const onRedeem = () => {
         @click="onRedeem"
         class="w-4/5 bg-amber-600 text-white font-bold font-mono py-3 rounded"
       >
-        {{ redeemButtonText }}
+        REQUEST REDEEM
       </button>
     </div>
   </div>
