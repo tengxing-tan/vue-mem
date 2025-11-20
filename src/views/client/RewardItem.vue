@@ -2,22 +2,25 @@
 import { useMemberPhoneNoStore } from '@/composables/useMemberPhoneNoStore'
 import type { RewardModel } from '@/models/reward.model'
 import { ref } from 'vue'
+import PhoneNo from './PhoneNo.vue'
 
 const props = defineProps<RewardModel>()
 const emit = defineEmits<{
   (e: 'backHome', value: null): void
 }>()
 
-const { getMemberClientPhoneNo, setMemberClientPhoneNo } = useMemberPhoneNoStore()
+const { getMemberPhoneNo } = useMemberPhoneNoStore()
 const isShowPhoneNo = ref(false)
+const redeemButtonText = ref('REDEEM NOW')
 
 const onRedeem = () => {
-  if (!getMemberClientPhoneNo()) {
+  if (!getMemberPhoneNo()) {
     isShowPhoneNo.value = true
     return
   }
 
-  setMemberClientPhoneNo('')
+  // send redeem request
+  redeemButtonText.value = 'SENT REDEEM REQUEST'
 }
 </script>
 
@@ -26,7 +29,7 @@ const onRedeem = () => {
     <div class="pl-2 align-baseline text-md w-max cursor-pointer" @click="emit('backHome', null)">
       <i class="ri-arrow-left-s-line"></i> Back home
     </div>
-    <div v-show="isShowPhoneNo">ok</div>
+    <PhoneNo v-show="isShowPhoneNo" @phone-no-found="isShowPhoneNo = false" />
     <div v-show="!isShowPhoneNo" class="overflow-y-scroll pb-28">
       <img
         src="/public/img/amigos/ckickenchopspaghetti.jpg"
@@ -51,7 +54,7 @@ const onRedeem = () => {
         @click="onRedeem"
         class="w-4/5 bg-amber-600 text-white font-bold font-mono py-3 rounded"
       >
-        REDEEM NOW
+        {{ redeemButtonText }}
       </button>
     </div>
   </div>

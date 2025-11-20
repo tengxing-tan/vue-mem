@@ -1,6 +1,7 @@
 import type { Env } from '.'
 import { createCompany } from './companies'
 import { handleMemberBatch } from './members/bulk'
+import { getMember } from './members/getMember'
 import { handleRewardBatch } from './rewards/bulk'
 import { getRewards } from './rewards/getReward'
 
@@ -11,6 +12,11 @@ export type ApiRoute = {
 }
 
 export const apiRoutes: ApiRoute[] = [
+  {
+    pathName: '/api/member/get',
+    method: 'GET',
+    handler: getMember,
+  },
   {
     pathName: '/api/members/bulk',
     method: 'POST',

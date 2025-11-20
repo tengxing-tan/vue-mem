@@ -10,7 +10,6 @@ export interface Env {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     onFetchInit()
-
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: env.corsHeaders })
     }
