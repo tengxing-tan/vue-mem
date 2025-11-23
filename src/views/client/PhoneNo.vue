@@ -10,7 +10,7 @@ const { setMemberPhoneNo } = useMemberPhoneNoStore()
 const { findPhoneNo } = useClientStore()
 
 const phoneNo = ref('')
-const isPhoneNoValid = computed(() => /^\d{10,15}$/.test(phoneNo.value))
+const isPhoneNoValid = computed(() => /^\d{2,15}$/.test(phoneNo.value))
 const resultMessage = ref('')
 
 const onFind = async () => {
@@ -18,12 +18,12 @@ const onFind = async () => {
 
   const member: MemberGet = await findPhoneNo(phoneNo.value)
   if (!member || member.isDeleted) {
-    resultMessage.value = '❌ Not found'
+    resultMessage.value = '❌ Please register at the counter.'
     return
   }
 
   setMemberPhoneNo(member.phoneNo)
-  resultMessage.value = '✅ Found'
+  resultMessage.value = '✅ OK. You can redeem now!'
 }
 </script>
 
@@ -38,7 +38,7 @@ const onFind = async () => {
             class="mt-1 py-2 md:py-4 px-3 w-full rounded-lg border-4 border-gray-300 shadow text-2xl text-gray-700"
             :class="!isPhoneNoValid && 'border-rose-200'"
             autofocus
-            minlength="10"
+            minlength="2"
             maxlength="15"
             placeholder="012345678"
             required

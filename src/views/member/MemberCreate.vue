@@ -27,7 +27,7 @@ async function onSubmit() {
   }) // server sync
 
   console.log('Created member with ID:', await memberId.text())
-  router.push('/members')
+  router.go(-1)
 }
 </script>
 
