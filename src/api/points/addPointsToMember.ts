@@ -11,21 +11,28 @@ export async function addPointsToMember(env: Env, request: Request): Promise<Res
       })
     }
 
-    const memberId = await env.D1_VUE_MEM.prepare(`SELECT id FROM main.members WHERE phoneNo = ?`)
+    const member = await env.D1_VUE_MEM.prepare(`SELECT id FROM main.members WHERE phoneNo = ?`)
       .bind(payload.phoneNo)
       .first<{ id: number }>()
 
-    console.log('memberId', memberId)
-    if (!memberId) return env.httpNotFound
+    if (!member) return env.httpNotFound
 
     await env.D1_VUE_MEM.prepare(
       `INSERT INTO main.points (memberId, points)
      VALUES(?, ?)`,
     )
-      .bind(memberId.id, payload.points)
+      .bind(member.id, payload.points)
       .first<{ id: number }>()
 
-    return new Response(JSON.stringify(memberId), {
+    await env.D1_VUE_MEM.prepare(
+      `UPDATE main.members
+     SET points = points + ?
+     WHERE id = ?`,
+    )
+      .bind(payload.points, member.id)
+      .run()
+
+    return new Response(JSON.stringify(member), {
       status: 200,
       headers: { 'Content-Type': 'application/json', ...env.corsHeaders },
     })
