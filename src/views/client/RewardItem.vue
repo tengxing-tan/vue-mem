@@ -7,7 +7,7 @@ import AppModal from '@/components/AppModal.vue'
 import { useClientStore } from './useClientStore'
 import { RedemptionStatus } from '@/enums/RedemptionStatus'
 
-const props = defineProps<RewardModel>()
+const props = defineProps<{ reward: RewardModel; memberPoints: number }>()
 const emit = defineEmits<{
   (e: 'backHome', value: null): void
 }>()
@@ -18,6 +18,10 @@ const isShowPhoneNo = ref(false)
 const redeemed = ref(false)
 
 const onRedeem = async () => {
+  if (props.memberPoints < props.reward.points) {
+    return
+  }
+
   const phoneNo = getMemberPhoneNo()
   if (!phoneNo) {
     isShowPhoneNo.value = true
@@ -25,13 +29,13 @@ const onRedeem = async () => {
   }
 
   // proceed to request redeem
-  if (!props.id) return
-  const bodaoyPayload = {
-    rewardId: props.id,
+  if (!props.reward.id) return
+  const bodyPayload = {
+    rewardId: props.reward.id,
     phoneNo: phoneNo,
     status: RedemptionStatus.Pending,
   }
-  const response = await requestRedemption(bodaoyPayload)
+  const response = await requestRedemption(bodyPayload)
   const result: { id?: string } = await response.json()
   if (!result.id) {
     alert('Failed to request redeem. Please try again later.')
@@ -53,12 +57,12 @@ const onRedeem = async () => {
     <div v-show="!isShowPhoneNo" class="overflow-y-scroll pb-28">
       <img src="/img/amigos/ckickenchopspaghetti.jpg" alt="" class="inset-0 w-full object-cover" />
       <div class="py-6 px-4">
-        <h1 class="text-2xl font-semibold font-sans text-zinc-900">{{ props.name }}</h1>
+        <h1 class="text-2xl font-semibold font-sans text-zinc-900">{{ props.reward.name }}</h1>
         <p class="text-zinc-500">
-          <span class="font-semibold text-zinc-800">{{ props.points }}</span> points
+          <span class="font-semibold text-zinc-800">{{ props.reward.points }}</span> points
         </p>
         <p class="text-zinc-700 pt-6">
-          {{ props.description }}
+          {{ props.reward.description }}
         </p>
       </div>
     </div>
@@ -69,6 +73,8 @@ const onRedeem = async () => {
       <button
         @click="onRedeem"
         class="w-4/5 bg-amber-600 text-white font-bold font-mono py-3 rounded"
+        :class="{ 'opacity-60': props.memberPoints < props.reward.points }"
+        :disabled="props.memberPoints < props.reward.points"
       >
         REQUEST REDEEM
       </button>

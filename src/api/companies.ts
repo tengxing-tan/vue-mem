@@ -10,14 +10,30 @@ export async function createCompany(env: Env, request: Request): Promise<Respons
       })
     }
 
-    const columns = ['email']
-    const valuesPlaceholders = columns.map((_, index) => `?${index + 1}`).join(', ')
-    const { results } = await env.D1_VUE_MEM.prepare(
-      `INSERT INTO main.companies (${columns.join(', ')})
-     VALUES(${valuesPlaceholders}) RETURNING id`,
+    let results
+    const attempt = await env.D1_VUE_MEM.prepare(
+      `
+      INSERT INTO main.companies (email)
+      SELECT ?1
+      WHERE NOT EXISTS (
+      SELECT 1 FROM main.companies WHERE email = ?1
+      )
+      RETURNING id
+    `,
     )
       .bind(payload.email)
       .run()
+
+    if (attempt.results.length === 0) {
+      const existing = await env.D1_VUE_MEM.prepare(
+        `SELECT id FROM main.companies WHERE email = ?1 LIMIT 1`,
+      )
+        .bind(payload.email)
+        .run()
+      results = existing.results
+    } else {
+      results = attempt.results
+    }
 
     return new Response(JSON.stringify(results[0]), {
       status: 200,

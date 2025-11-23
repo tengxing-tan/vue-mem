@@ -19,7 +19,14 @@ async function onPhoneNoChange() {
 
 async function onSubmit() {
   if (memberForm.value.phoneNo.trim() === '') return
-  await useMemberStore().upsertMember(memberForm.value, true)
+  await useMemberStore().upsertMember(memberForm.value, true) // indexedDB sync
+  const memberId = await fetch('/api/member/new', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(memberForm.value),
+  }) // server sync
+
+  console.log('Created member with ID:', await memberId.text())
   router.push('/members')
 }
 </script>

@@ -40,14 +40,26 @@ const showAll = async () => {
   await loadAllMembers()
   showingMembers.value = members.value
 }
+
+const refresh = async () => {
+  const response = await fetch('/api/member/getAll', { method: 'GET' })
+  const fetchedMembers = (await response.json()) as MemberModel[]
+  for (const m of fetchedMembers) {
+    await useMemberStore().upsertMember(m, false)
+  }
+  showingMembers.value = members.value = fetchedMembers
+}
 </script>
 <template>
   <section>
     <div class="flex justify-between items-center">
       <h1 class="text-4xl font-bold py-6 text-black">All Members</h1>
-      <RouterLink to="/member/create">
-        <AppButton bgColor="yellow">Add Member</AppButton>
-      </RouterLink>
+      <div class="space-x-4">
+        <button @click="refresh" class="p-4 active:underline underline-offset-4">🔃Refresh</button>
+        <RouterLink to="/member/create">
+          <AppButton bgColor="yellow">Add Member</AppButton>
+        </RouterLink>
+      </div>
     </div>
 
     <AppFormLabel label="Phone No" labelId="phoneNo">
@@ -73,11 +85,7 @@ const showAll = async () => {
     </p>
 
     <AppTable v-if="showingMembers.length > 0" :headers="headers">
-      <tr
-        v-for="member in showingMembers"
-        :key="member.phoneNo"
-        class="*:text-gray-900 *:first:sticky *:first:left-0 *:first:bg-white *:first:font-medium"
-      >
+      <tr v-for="member in showingMembers" :key="member.phoneNo">
         <td class="px-3 py-2 whitespace-nowrap">
           <RouterLink
             :to="routeToMemberRead(member.phoneNo)"
@@ -95,7 +103,7 @@ const showAll = async () => {
             {{ member.phoneNo }}
           </RouterLink>
         </td>
-        <td class="px-3 py-2 whitespace-nowrap">
+        <td class="px-3 py-2 text-gray-900 whitespace-nowrap">
           {{ member.points }}
         </td>
       </tr>

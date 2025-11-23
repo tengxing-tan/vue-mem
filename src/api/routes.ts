@@ -1,7 +1,10 @@
 import type { Env } from '.'
 import { createCompany } from './companies'
 import { handleMemberBatch } from './members/bulk'
+import { createNewMember } from './members/createNewMember'
+import { getAllMembers } from './members/getAllMembers'
 import { getMember } from './members/getMember'
+import { getMemberPoints } from './members/getMemberPoints'
 import { approveRedemption } from './redemptions/approveRedemption'
 import { getPendingRedemption } from './redemptions/getPendingRedemptions'
 import { setRedemptionRequest } from './redemptions/setRedeemRequest'
@@ -19,6 +22,21 @@ export const apiRoutes: ApiRoute[] = [
     pathName: '/api/member/get',
     method: 'GET',
     handler: getMember,
+  },
+  {
+    pathName: '/api/member/points',
+    method: 'GET',
+    handler: getMemberPoints,
+  },
+  {
+    pathName: '/api/member/new',
+    method: 'POST',
+    handler: createNewMember,
+  },
+  {
+    pathName: '/api/member/getAll',
+    method: 'GET',
+    handler: getAllMembers,
   },
   {
     pathName: '/api/members/bulk',
