@@ -5,6 +5,7 @@ import { createNewMember } from './members/createNewMember'
 import { getAllMembers } from './members/getAllMembers'
 import { getMember } from './members/getMember'
 import { getMemberPoints } from './members/getMemberPoints'
+import { addPointsToMember } from './points/addPointsToMember'
 import { approveRedemption } from './redemptions/approveRedemption'
 import { getPendingRedemption } from './redemptions/getPendingRedemptions'
 import { setRedemptionRequest } from './redemptions/setRedeemRequest'
@@ -42,6 +43,11 @@ export const apiRoutes: ApiRoute[] = [
     pathName: '/api/members/bulk',
     method: 'POST',
     handler: handleMemberBatch,
+  },
+  {
+    pathName: '/api/point/new',
+    method: 'POST',
+    handler: addPointsToMember,
   },
   {
     pathName: '/api/rewards',

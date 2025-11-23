@@ -20,8 +20,8 @@ async function onPhoneNoChange() {
   member.value = await findMemberInIdb(memberPhoneNo.value)
 }
 
-function onAddPoints() {
-  if (!member.value) return
+async function onAddPoints() {
+  if (!member.value || showModal.value === true) return
   const pointsToAdd = parseInt(addPoints.value)
   if (isNaN(pointsToAdd)) return
   showModal.value = true
@@ -37,6 +37,17 @@ function onAddPoints() {
     },
     true,
   )
+
+  await fetch('/api/point/new', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      phoneNo: member.value.phoneNo,
+      points: pointsToAdd,
+    }),
+  })
 
   member.value.points += pointsToAdd
   upsertMember(member.value, false)

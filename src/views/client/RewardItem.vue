@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useMemberPhoneNoStore } from '@/composables/useMemberPhoneNoStore'
 import type { RewardModel } from '@/models/reward.model'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import PhoneNo from './PhoneNo.vue'
 import AppModal from '@/components/AppModal.vue'
 import { useClientStore } from './useClientStore'
@@ -16,14 +16,18 @@ const { getMemberPhoneNo } = useMemberPhoneNoStore()
 const { requestRedemption } = useClientStore()
 const isShowPhoneNo = ref(false)
 const redeemed = ref(false)
+const phoneNo = ref(getMemberPhoneNo())
+
+const nonRedeemable = computed(() => {
+  return props.memberPoints < props.reward.points && phoneNo.value === ''
+})
 
 const onRedeem = async () => {
-  if (props.memberPoints < props.reward.points) {
+  if (nonRedeemable.value) {
     return
   }
 
-  const phoneNo = getMemberPhoneNo()
-  if (!phoneNo) {
+  if (!phoneNo.value) {
     isShowPhoneNo.value = true
     return
   }
@@ -32,7 +36,7 @@ const onRedeem = async () => {
   if (!props.reward.id) return
   const bodyPayload = {
     rewardId: props.reward.id,
-    phoneNo: phoneNo,
+    phoneNo: phoneNo.value,
     status: RedemptionStatus.Pending,
   }
   const response = await requestRedemption(bodyPayload)
@@ -73,8 +77,8 @@ const onRedeem = async () => {
       <button
         @click="onRedeem"
         class="w-4/5 bg-amber-600 text-white font-bold font-mono py-3 rounded"
-        :class="{ 'opacity-60': props.memberPoints < props.reward.points }"
-        :disabled="props.memberPoints < props.reward.points"
+        :class="{ 'opacity-60': nonRedeemable }"
+        :disabled="nonRedeemable"
       >
         REQUEST REDEEM
       </button>

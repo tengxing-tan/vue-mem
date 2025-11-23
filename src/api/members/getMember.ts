@@ -17,13 +17,13 @@ export async function getMember(env: Env, request: Request): Promise<Response> {
 
     const stmt = env.D1_VUE_MEM.prepare(
       `SELECT
-        name, phoneNo, points, isDeleted
+        id, name, phoneNo, points, isDeleted
       FROM main.members
         WHERE phoneNo = ?`,
     ).bind(phoneNo)
-    const { results } = await stmt.run()
+    const member = await stmt.first()
 
-    return new Response(JSON.stringify(results[0] || null), {
+    return new Response(JSON.stringify(member || null), {
       status: 200,
       headers: { 'Content-Type': 'application/json', ...env.corsHeaders },
     })

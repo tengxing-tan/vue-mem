@@ -10,7 +10,7 @@ const selectItem = ref<RewardModel | null>(null)
 
 const { getMemberPhoneNo } = useMemberPhoneNoStore()
 const phoeNo = ref(getMemberPhoneNo())
-const points = ref(0)
+const points = ref<number>(0)
 
 const rewards = ref<RewardModel[]>([])
 onMounted(async () => {
@@ -19,17 +19,25 @@ onMounted(async () => {
   rewards.value = await res.json()
 
   if (phoeNo.value) {
-    const res2 = await fetch(base + '/api/member/points?phoneNo=' + phoeNo.value)
-    if (!res2.ok) throw new Error(`Request failed: ${res2.status}`)
-    points.value = await res2.json()
+    fetchMemberPoints()
   }
 })
+
+const fetchMemberPoints = async () => {
+  const res2 = await fetch(base + '/api/member/points?phoneNo=' + phoeNo.value)
+  if (!res2.ok) throw new Error(`Request failed: ${res2.status}`)
+  points.value = (await res2.json()) ?? 0
+}
 
 const backHome = () => {
   selectItem.value = null
 
   if (!phoeNo.value) {
     phoeNo.value = getMemberPhoneNo()
+  }
+
+  if (!points.value && phoeNo.value) {
+    fetchMemberPoints()
   }
 }
 </script>
