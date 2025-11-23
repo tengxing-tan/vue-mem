@@ -19,13 +19,11 @@ const redeemed = ref(false)
 const phoneNo = ref(getMemberPhoneNo())
 
 const nonRedeemable = computed(() => {
-  return props.memberPoints < props.reward.points && phoneNo.value === ''
+  return (props.memberPoints < props.reward.points && !!phoneNo.value) || !phoneNo.value
 })
 
 const onRedeem = async () => {
-  if (nonRedeemable.value) {
-    return
-  }
+  if (nonRedeemable.value) return
 
   if (!phoneNo.value) {
     isShowPhoneNo.value = true
