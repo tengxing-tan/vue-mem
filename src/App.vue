@@ -28,7 +28,7 @@ const companyId = ref(useCompanyStore().getCompanyId() ?? 0)
     <header class="border-b border-gray-200 shadow-sm">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
-          <div class="flex items-center gap-2 text-lg text-gray-800">
+          <div class="flex items-center gap-4 text-lg text-gray-800">
             <RouterLink to="/point">
               <span :class="navClass('/point')">🍄Points</span>
             </RouterLink>
@@ -37,6 +37,9 @@ const companyId = ref(useCompanyStore().getCompanyId() ?? 0)
             </RouterLink>
             <RouterLink to="/reward">
               <span :class="navClass('/reward')">🎁Rewards</span>
+            </RouterLink>
+            <RouterLink to="/redemptions">
+              <span :class="navClass('/redemption')">🍔Redemptions</span>
             </RouterLink>
           </div>
         </div>

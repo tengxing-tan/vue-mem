@@ -22,13 +22,13 @@ export async function setRedemptionRequest(env: Env, request: Request): Promise<
       })
     }
 
-    const columns = ['memberId', 'rewardId', 'status']
+    const columns = ['memberId', 'phoneNo', 'rewardId', 'status']
     const valuesPlaceholders = columns.map((_, index) => `?${index + 1}`).join(', ')
     const redemption = await env.D1_VUE_MEM.prepare(
       `INSERT INTO main.redemptions (${columns.join(', ')})
      VALUES(${valuesPlaceholders}) RETURNING id`,
     )
-      .bind(member.id, payload.rewardId, payload.status)
+      .bind(member.id, payload.phoneNo, payload.rewardId, payload.status)
       .first<{ id: number }>()
 
     return new Response(JSON.stringify(redemption), {

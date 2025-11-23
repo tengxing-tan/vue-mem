@@ -15,7 +15,7 @@ const emit = defineEmits<{
     >
       <div class="block mb-2 max-w-fit" @click="emit('selectItem', reward)">
         <img
-          src="/public/img/amigos/ckickenchopspaghetti.jpg"
+          src="/src/img/amigos/ckickenchopspaghetti.jpg"
           alt=""
           class="inset-0 w-full h-fit object-cover"
         />

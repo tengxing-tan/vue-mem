@@ -22,7 +22,7 @@ const routes = [
     path: '/redemptions',
     name: 'redemptions',
     meta: { title: 'Redemptions' },
-    component: () => import('@/views/redeem/redemptionView.vue'),
+    component: () => import('@/views/redeem/RedemptionView.vue'),
   },
   ...memberRoutes,
   ...pointRoutes,

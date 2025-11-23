@@ -2,6 +2,7 @@ import type { Env } from '.'
 import { createCompany } from './companies'
 import { handleMemberBatch } from './members/bulk'
 import { getMember } from './members/getMember'
+import { approveRedemption } from './redemptions/approveRedemption'
 import { getPendingRedemption } from './redemptions/getPendingRedemptions'
 import { setRedemptionRequest } from './redemptions/setRedeemRequest'
 import { handleRewardBatch } from './rewards/bulk'
@@ -39,7 +40,11 @@ export const apiRoutes: ApiRoute[] = [
     method: 'POST',
     handler: setRedemptionRequest,
   },
-
+  {
+    pathName: '/api/redemption/approve',
+    method: 'POST',
+    handler: approveRedemption,
+  },
   {
     pathName: '/api/redemptions/pending',
     method: 'GET',
