@@ -17,7 +17,7 @@ const emit = defineEmits<{
         <img
           src="/img/amigos/ckickenchopspaghetti.jpg"
           alt=""
-          class="inset-0 w-full h-fit object-cover"
+          class="inset-0 w-full h-56 object-cover"
         />
         <p class="h-20 overflow-clip text-left text-lg/6 font-semibold font-sans">
           {{ reward.name }}
