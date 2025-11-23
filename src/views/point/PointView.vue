@@ -82,7 +82,7 @@ function closeModal() {
           autofocus
         />
       </AppFormLabel>
-      <p class="px-4 border-l-2 border-zinc-400">
+      <p class="px-4 border-l-2 border-zinc-400 text-zinc-700">
         Adding points for
         <RouterLink
           v-if="member"

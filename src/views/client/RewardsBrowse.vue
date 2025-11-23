@@ -11,7 +11,7 @@ const emit = defineEmits<{
     <div
       v-for="reward in props.rewards"
       :key="reward.id"
-      class="border border-zinc-200 p-4 rounded-lg"
+      class="bg-white border border-zinc-200 p-4 rounded-lg"
     >
       <div class="block mb-2 max-w-fit" @click="emit('selectItem', reward)">
         <img

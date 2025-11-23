@@ -19,7 +19,8 @@ const redeemed = ref(false)
 const phoneNo = ref(getMemberPhoneNo())
 
 const nonRedeemable = computed(() => {
-  return (props.memberPoints < props.reward.points && !!phoneNo.value) || !phoneNo.value
+  if (!phoneNo.value) return false
+  return !!phoneNo.value && props.memberPoints < props.reward.points
 })
 
 const onRedeem = async () => {
@@ -52,7 +53,10 @@ const onRedeem = async () => {
     <AppModal v-show="redeemed" title=" Sent redeem request ✅ " @ok="redeemed = false">
       <p class="text-zinc-700">Please check with counter</p>
     </AppModal>
-    <div class="pl-2 align-baseline text-md w-max cursor-pointer" @click="emit('backHome', null)">
+    <div
+      class="pl-2 align-baseline text-md text-zinc-700 w-max cursor-pointer"
+      @click="emit('backHome', null)"
+    >
       <i class="ri-arrow-left-s-line"></i> Back home
     </div>
     <PhoneNo v-show="isShowPhoneNo" @phone-no-found="onRedeem" />
