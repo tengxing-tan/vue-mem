@@ -19,11 +19,11 @@ const emit = defineEmits<{
           alt=""
           class="inset-0 w-full h-56 object-cover"
         />
-        <p class="h-20 overflow-clip text-left text-lg/6 font-semibold font-sans">
+        <p class="h-20 overflow-clip text-zinc-700 text-left text-lg/6 font-semibold font-sans">
           {{ reward.name }}
         </p>
         <p class="text-left">
-          <span class="font-semibold">{{ reward.points }}</span> points
+          <span class="font-semibold text-zinc-700">{{ reward.points }}</span> points
         </p>
       </div>
     </div>
