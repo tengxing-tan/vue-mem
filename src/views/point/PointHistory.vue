@@ -29,7 +29,7 @@ const handleEarnedPoints = (point: PointModel) => {
 
     <AppTable v-if="points.length > 0" :headers="headers">
       <tr
-        v-for="point in points"
+        v-for="point in points.slice().reverse()"
         :key="point.id"
         class="*:text-gray-900 *:first:sticky *:first:left-0 *:first:bg-white *:first:font-medium"
       >

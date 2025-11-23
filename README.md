@@ -37,3 +37,25 @@ npm run build
 ```sh
 npm run lint
 ```
+
+### Build command on Cloudflare worker
+
+```sh
+rm -rf node_modules && rm package-lock.json && npm install && npm run build
+```
+
+### Cloudflare API
+
+```json
+./wrangler.jsonc
+{
+    //
+    main: "main": "src/worker.ts",
+}
+```
+
+### Wrangle CLI
+
+```sh
+npx wrangler d1 execute d1-vue-mem --remote --file=./migrations/members.sql
+```

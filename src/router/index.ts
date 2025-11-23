@@ -1,26 +1,35 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { memberRoutes } from './member.route'
-import PointView from '@/views/point/PointView.vue'
+import { pointRoutes } from './point.route'
+import { rewardRoutes } from './reward.route'
+import HomeView from '@/views/HomeView.vue'
 
 const routes = [
   {
     path: '/',
+    alias: ['/home'],
     name: 'home',
     meta: { title: 'Home' },
-    component: PointView,
+    component: HomeView,
+  },
+  {
+    path: '/company',
+    name: 'companyHome',
+    meta: { title: 'Company Home' },
+    component: () => import('@/views/company/CompanyView.vue'),
+  },
+  {
+    path: '/redemptions',
+    name: 'redemptions',
+    meta: { title: 'Redemptions' },
+    component: () => import('@/views/redeem/RedemptionView.vue'),
   },
   ...memberRoutes,
+  ...pointRoutes,
+  ...rewardRoutes,
   {
-    path: '/point',
-    name: 'point',
-    meta: { title: 'Point' },
-    component: PointView,
-  },
-  {
-    path: '/point/history',
-    name: 'pointHistory',
-    meta: { title: 'Point History' },
-    component: () => import('@/views/point/PointHistory.vue'),
+    path: '/:pathMatch(.*)*',
+    redirect: { name: 'home' },
   },
 ]
 

@@ -55,7 +55,7 @@ function closeModal() {
       </div>
     </AppModal>
 
-    <div class="flex justify-between">
+    <div class="flex justify-between items-center">
       <h1 class="text-4xl font-bold py-6 text-black">Add Points</h1>
       <RouterLink to="/point/history">
         <AppButton type="button" bg-color="yellow">Full History</AppButton>
@@ -73,8 +73,14 @@ function closeModal() {
       </AppFormLabel>
       <p class="px-4 border-l-2 border-zinc-400">
         Adding points for
-        <span class="font-bold">{{ member ? member?.name || '💎' : '{ member name }' }}</span
-        >, current points:
+        <RouterLink
+          v-if="member"
+          :to="`/member/read/${member?.phoneNo}`"
+          class="font-bold underline"
+          >{{ member?.name || '💎' }}</RouterLink
+        >
+        <span v-else class="font-bold">{ member name }</span>
+        <span class="font-semibold">, current points: </span>
         <span class="font-bold">{{ member ? member?.points || 0 : '{ points }' }}</span>
       </p>
       <AppFormLabel label="Add Points" labelId="addPoints">
