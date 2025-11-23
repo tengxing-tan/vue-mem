@@ -8,7 +8,8 @@ import { useMemberPhoneNoStore } from '@/composables/useMemberPhoneNoStore'
 const base = import.meta.env.VITE_API_BASE || ''
 const selectItem = ref<RewardModel | null>(null)
 
-const phoeNo = ref(useMemberPhoneNoStore().getMemberPhoneNo())
+const { getMemberPhoneNo } = useMemberPhoneNoStore()
+const phoeNo = ref(getMemberPhoneNo())
 const points = ref(0)
 
 const rewards = ref<RewardModel[]>([])
@@ -23,6 +24,14 @@ onMounted(async () => {
     points.value = await res2.json()
   }
 })
+
+const backHome = () => {
+  selectItem.value = null
+
+  if (!phoeNo.value) {
+    phoeNo.value = getMemberPhoneNo()
+  }
+}
 </script>
 
 <template>
@@ -40,7 +49,7 @@ onMounted(async () => {
       v-if="selectItem"
       :reward="selectItem"
       :memberPoints="points"
-      @back-home="selectItem = null"
+      @back-home="backHome"
       class="my-6"
     />
     <RewardsBrowse v-else :rewards="rewards" @select-item="selectItem = $event" />

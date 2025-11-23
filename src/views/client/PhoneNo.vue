@@ -18,12 +18,12 @@ const onFind = async () => {
 
   const member: MemberGet = await findPhoneNo(phoneNo.value)
   if (!member || member.isDeleted) {
-    resultMessage.value = '❌ Not found'
+    resultMessage.value = '❌ Please register at the counter.'
     return
   }
 
   setMemberPhoneNo(member.phoneNo)
-  resultMessage.value = '✅ Found'
+  resultMessage.value = '✅ OK. You can redeem now!'
 }
 </script>
 
