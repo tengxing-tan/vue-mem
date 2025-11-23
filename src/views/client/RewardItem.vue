@@ -17,11 +17,17 @@ const { requestRedemption } = useClientStore()
 const isShowPhoneNo = ref(false)
 const redeemed = ref(false)
 const phoneNo = ref(getMemberPhoneNo())
+const memberPoints = ref(props.memberPoints)
 
 const nonRedeemable = computed(() => {
   if (!phoneNo.value) return false
-  return !!phoneNo.value && props.memberPoints < props.reward.points
+  return !!phoneNo.value && memberPoints.value < props.reward.points
 })
+
+const onPhoneNoFound = (phoneNoValue: string, memberPointsValue: number) => {
+  phoneNo.value = phoneNoValue
+  memberPoints.value = memberPointsValue || 0
+}
 
 const onRedeem = async () => {
   if (nonRedeemable.value) return
@@ -59,7 +65,11 @@ const onRedeem = async () => {
     >
       <i class="ri-arrow-left-s-line"></i> Back home
     </div>
-    <PhoneNo v-show="isShowPhoneNo" @phone-no-found="onRedeem" />
+    <PhoneNo
+      v-show="isShowPhoneNo"
+      @phone-no-found="onPhoneNoFound"
+      @close="isShowPhoneNo = false"
+    />
     <div v-show="!isShowPhoneNo" class="overflow-y-scroll pb-28">
       <img src="/img/amigos/ckickenchopspaghetti.jpg" alt="" class="inset-0 w-full object-cover" />
       <div class="py-6 px-4">

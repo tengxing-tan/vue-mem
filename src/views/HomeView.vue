@@ -4,13 +4,15 @@ import type { RewardModel } from '@/models/reward.model'
 import RewardsBrowse from './client/RewardsBrowse.vue'
 import RewardItem from './client/RewardItem.vue'
 import { useMemberPhoneNoStore } from '@/composables/useMemberPhoneNoStore'
+import PhoneNo from './client/PhoneNo.vue'
 
 const base = import.meta.env.VITE_API_BASE || ''
 const selectItem = ref<RewardModel | null>(null)
 
 const { getMemberPhoneNo } = useMemberPhoneNoStore()
-const phoeNo = ref(getMemberPhoneNo())
+const phoneNo = ref(getMemberPhoneNo())
 const points = ref<number>(0)
+const isShowPhoneNo = ref(false)
 
 const rewards = ref<RewardModel[]>([])
 onMounted(async () => {
@@ -18,25 +20,30 @@ onMounted(async () => {
   if (!res.ok) throw new Error(`Request failed: ${res.status}`)
   rewards.value = await res.json()
 
-  if (phoeNo.value) {
+  if (phoneNo.value) {
     fetchMemberPoints()
   }
 })
 
 const fetchMemberPoints = async () => {
-  const res2 = await fetch(base + '/api/member/points?phoneNo=' + phoeNo.value)
+  const res2 = await fetch(base + '/api/member/points?phoneNo=' + phoneNo.value)
   if (!res2.ok) throw new Error(`Request failed: ${res2.status}`)
   points.value = (await res2.json()) ?? 0
+}
+
+const onPhoneNoFound = (phoneNoValue: string, memberPointsValue: number) => {
+  phoneNo.value = phoneNoValue
+  points.value = memberPointsValue || 0
 }
 
 const backHome = () => {
   selectItem.value = null
 
-  if (!phoeNo.value) {
-    phoeNo.value = getMemberPhoneNo()
+  if (!phoneNo.value) {
+    phoneNo.value = getMemberPhoneNo()
   }
 
-  if (!points.value && phoeNo.value) {
+  if (!points.value && phoneNo.value) {
     fetchMemberPoints()
   }
 }
@@ -50,9 +57,22 @@ const backHome = () => {
       <img src="/img/amigos/amigos-logo.jpg" alt="" class="w-20 h-20 rounded-full" />
       <h1 class="text-zinc-800">Amigos Chinese $ Western Cafe</h1>
     </div>
-    <p v-show="phoeNo" class="p-2 pt-4 text-sm text-zinc-600 transition">
+    <p v-show="phoneNo" class="p-2 text-sm text-zinc-600 border-b">
       🍄 You have <span class="font-semibold">{{ points }}</span> points.
     </p>
+
+    <button
+      v-show="!phoneNo"
+      @click="isShowPhoneNo = true"
+      class="text-zinc-700 p-2 border-b w-full text-left"
+    >
+      📱View your points
+    </button>
+    <PhoneNo
+      v-show="isShowPhoneNo"
+      @phone-no-found="onPhoneNoFound"
+      @close="isShowPhoneNo = false"
+    />
     <RewardItem
       v-if="selectItem"
       :reward="selectItem"

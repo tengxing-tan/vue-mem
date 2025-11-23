@@ -6,12 +6,18 @@ import { useClientStore } from './useClientStore'
 import type { MemberGet } from '@/models/member-get.model'
 import { useMemberPhoneNoStore } from '@/composables/useMemberPhoneNoStore'
 
+const emit = defineEmits<{
+  (e: 'phone-no-found', value: string, memberPoints: number): void
+  (e: 'close', value: null): void
+}>()
+
 const { setMemberPhoneNo } = useMemberPhoneNoStore()
 const { findPhoneNo } = useClientStore()
 
 const phoneNo = ref('')
 const isPhoneNoValid = computed(() => /^\d{2,15}$/.test(phoneNo.value))
 const resultMessage = ref('')
+const cookieSet = ref(false)
 
 const onFind = async () => {
   if (!isPhoneNoValid.value) return
@@ -24,6 +30,8 @@ const onFind = async () => {
 
   setMemberPhoneNo(member.phoneNo)
   resultMessage.value = '✅ OK. You can redeem now!'
+  emit('phone-no-found', member.phoneNo, member.points || 0)
+  cookieSet.value = true
 }
 </script>
 
@@ -47,8 +55,15 @@ const onFind = async () => {
         </div>
       </AppFormLabel>
       <div class="py-6 flex items-center gap-4">
-        <AppButton type="submit" :bgColor="isPhoneNoValid ? 'amber' : 'zinc'" @onClick="onFind"
+        <AppButton
+          v-show="!cookieSet"
+          type="submit"
+          :bgColor="isPhoneNoValid ? 'amber' : 'zinc'"
+          @onClick="onFind"
           >Find</AppButton
+        >
+        <AppButton v-show="!!cookieSet" type="button" @onClick="() => emit('close', null)"
+          >Close</AppButton
         >
         <p v-show="isPhoneNoValid && resultMessage !== ''" class="text-zinc-700 font-semibold">
           {{ resultMessage }}
