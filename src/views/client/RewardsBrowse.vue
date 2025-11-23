@@ -11,7 +11,7 @@ const emit = defineEmits<{
     <div
       v-for="reward in props.rewards"
       :key="reward.id"
-      class="border border-zinc-200 p-4 rounded-lg"
+      class="bg-white border border-zinc-200 p-4 rounded-lg"
     >
       <div class="block mb-2 max-w-fit" @click="emit('selectItem', reward)">
         <img
@@ -19,11 +19,11 @@ const emit = defineEmits<{
           alt=""
           class="inset-0 w-full h-56 object-cover"
         />
-        <p class="h-20 overflow-clip text-left text-lg/6 font-semibold font-sans">
+        <p class="h-20 overflow-clip text-zinc-700 text-left text-lg/6 font-semibold font-sans">
           {{ reward.name }}
         </p>
-        <p class="text-left">
-          <span class="font-semibold">{{ reward.points }}</span> points
+        <p class="text-left text-zinc-700">
+          <span class="font-semibold text-zinc-700">{{ reward.points }}</span> points
         </p>
       </div>
     </div>

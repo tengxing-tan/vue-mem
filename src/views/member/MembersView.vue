@@ -55,7 +55,9 @@ const refresh = async () => {
     <div class="flex justify-between items-center">
       <h1 class="text-4xl font-bold py-6 text-black">All Members</h1>
       <div class="space-x-4">
-        <button @click="refresh" class="p-4 active:underline underline-offset-4">🔃Refresh</button>
+        <button @click="refresh" class="p-4 text-zinc-700 active:underline underline-offset-4">
+          🔃Refresh
+        </button>
         <RouterLink to="/member/create">
           <AppButton bgColor="yellow">Add Member</AppButton>
         </RouterLink>
