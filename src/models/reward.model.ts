@@ -8,4 +8,5 @@ export interface RewardModel {
   category: RewardCategory
   validFrom: Date | null
   validUntil: Date | null
+  imageUrl?: string | null
 }

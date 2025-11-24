@@ -1,6 +1,6 @@
 import type { Env } from '..'
 import { executeBatch, prepareRewardUpserts } from './helpers'
-import type { RewardUpsert } from './rewardUpsert'
+import type { RewardUpsert } from '../models/rewardUpsert'
 import type { BatchDataPayload } from '../models/batchDataPayload'
 
 export async function handleRewardBatch(env: Env, request: Request): Promise<Response> {
@@ -18,6 +18,7 @@ export async function handleRewardBatch(env: Env, request: Request): Promise<Res
       validFrom: reward.validFrom,
       validUntil: reward.validUntil,
       description: reward.description,
+      imageUrl: reward.imageUrl ?? null,
     }))
 
     const statements = prepareRewardUpserts(env, rewardsUpsert)

@@ -96,6 +96,25 @@ const updateReward = async () => {
             class="resize-none mt-1 py-2 md:py-4 px-3 w-full rounded border border-gray-300 shadow text-2xl text-gray-700"
           />
         </AppFormLabel>
+
+        <AppFormLabel label="Image URL" labelId="imageUrl">
+          <div class="flex items-center gap-2">
+            <input
+              v-model.trim="reward.imageUrl"
+              type="text"
+              class="mt-1 py-2 md:py-4 px-3 w-full rounded border border-gray-300 shadow text-2xl text-gray-700"
+            />
+            <span class="validation"></span>
+          </div>
+        </AppFormLabel>
+        <div class="h-56 w-full">
+          <img
+            v-if="reward.imageUrl"
+            :src="reward.imageUrl"
+            alt="Reward Image"
+            class="object-contain md:object-cover"
+          />
+        </div>
       </div>
       <AppButton :bg-color="isValid ? 'green' : 'gray'" @on-click="updateReward">OK</AppButton>
     </form>

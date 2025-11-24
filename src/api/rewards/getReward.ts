@@ -11,7 +11,8 @@ export async function getRewards(env: Env, request: Request): Promise<Response> 
         category,
         validFrom,
         validUntil,
-        description
+        description,
+        imageUrl
       FROM main.rewards
         WHERE validFrom IS NULL OR validFrom <= datetime('now','+1 day')
         AND (validUntil IS NULL OR validUntil >= datetime('now','+1 day'))`,

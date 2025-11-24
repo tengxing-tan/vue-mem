@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS rewards;
 CREATE TABLE IF NOT EXISTS rewards (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  companyId INTEGER NOT NULL,
+  companyId INTEGER DEFAULT 0,
   name TEXT NOT NULL,
   description TEXT,
   imageUrl TEXT,
@@ -10,6 +10,5 @@ CREATE TABLE IF NOT EXISTS rewards (
   validFrom TEXT NULL,
   validUntil TEXT NULL,
   createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  updatedAt TEXT NOT NULL DEFAULT (datetime('now')),
-  FOREIGN KEY (companyId) REFERENCES companies(id) ON DELETE CASCADE
+  updatedAt TEXT NOT NULL DEFAULT (datetime('now'))
 );

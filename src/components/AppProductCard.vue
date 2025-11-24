@@ -5,7 +5,7 @@ const props = defineProps<{
   title: string
   price: number
   link: string
-  imgUrl?: string
+  imgUrl?: string | null
 }>()
 </script>
 
@@ -19,7 +19,7 @@ const props = defineProps<{
           'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&amp;fit=crop&amp;q=80&amp;w=1160'
         "
         alt=""
-        class="absolute inset-0 h-full w-full object-cover opacity-100 group-hover:opacity-0"
+        class="w-full h-full object-contain md:object-cover"
       />
       <i v-else class="ri-gift-line text-zinc-400 text-5xl"></i>
     </div>

@@ -1,5 +1,5 @@
 import type { Env } from '@/api'
-import type { RewardUpsert } from './rewardUpsert'
+import type { RewardUpsert } from '../models/rewardUpsert'
 
 /**
  * Prepares upsert statements for members.
@@ -14,6 +14,7 @@ export function prepareRewardUpserts(env: Env, rewards: RewardUpsert[]): D1Prepa
     'validFrom',
     'validUntil',
     'description',
+    'imageUrl',
   ]
   const valuesPlaceholders = columnsUpsert.map((_, index) => `?${index + 1}`).join(', ')
   const stmt = env.D1_VUE_MEM.prepare(
@@ -32,6 +33,7 @@ export function prepareRewardUpserts(env: Env, rewards: RewardUpsert[]): D1Prepa
         reward.validFrom,
         reward.validUntil,
         reward.description,
+        reward.imageUrl,
       ),
     )
   }

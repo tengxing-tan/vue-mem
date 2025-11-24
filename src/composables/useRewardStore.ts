@@ -13,6 +13,7 @@ export function useRewardStore() {
     category: RewardCategory.Beverage,
     validFrom: new Date(),
     validUntil: null,
+    imageUrl: null,
   })
 
   const isValid = computed(() => validation(reward.value))

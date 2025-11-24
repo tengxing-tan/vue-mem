@@ -6,4 +6,5 @@ export interface RewardUpsert {
   validFrom: Date | null
   validUntil: Date | null
   description: string
+  imageUrl?: string | null
 }
