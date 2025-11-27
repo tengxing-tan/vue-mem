@@ -1,7 +1,6 @@
 DROP TABLE IF EXISTS rewards;
 CREATE TABLE IF NOT EXISTS rewards (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  companyId INTEGER DEFAULT 0,
   name TEXT NOT NULL,
   description TEXT,
   imageUrl TEXT,

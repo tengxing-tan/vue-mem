@@ -6,17 +6,22 @@ import { toRaw } from 'vue'
 import RewardCategoryOptions from './RewardCategoryOptions.vue'
 import router from '@/router'
 import { useRewardStore } from '@/composables/useRewardStore'
-import { useJsonDataStore } from '@/composables/useJsonDataStore'
-import type { RewardModel } from '@/models/reward.model'
 
 const { isValid, reward } = useRewardStore()
 
 const createReward = async () => {
   if (!isValid.value) return
 
-  const rewardId = await create(toRaw(reward.value))
-  await useJsonDataStore().bulkInsert<RewardModel>([toRaw(reward.value)])
-  router.push('/reward/' + rewardId)
+  const idbRewardId = await create(toRaw(reward.value))
+  reward.value.id = Number(idbRewardId)
+  const response = await fetch('/api/reward/new', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(toRaw(reward.value)),
+  }) // server sync
+
+  const res: { id: number } = await response.json()
+  router.push('/reward/' + res.id)
 }
 </script>
 
@@ -89,7 +94,7 @@ const createReward = async () => {
         <AppFormLabel label="Image URL" labelId="imageUrl">
           <div class="flex items-center gap-2">
             <input
-              v-model.trim="reward.imageUrl"
+              v-model="reward.imageUrl"
               type="text"
               class="mt-1 py-2 md:py-4 px-3 w-full rounded border border-gray-300 shadow text-2xl text-gray-700"
             />

@@ -3,8 +3,7 @@ import type { RewardModel } from '@/models/reward.model'
 import { computed, ref } from 'vue'
 
 export function useRewardStore() {
-  const validation = (reward: RewardModel): boolean =>
-    !!reward.name && reward.points >= 0 && !!reward.category
+  const validation = (reward: RewardModel): boolean => !!reward.name
 
   const reward = ref<RewardModel>({
     name: '',

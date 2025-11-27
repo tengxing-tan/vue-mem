@@ -10,6 +10,7 @@ import { approveRedemption } from './redemptions/approveRedemption'
 import { getPendingRedemption } from './redemptions/getPendingRedemptions'
 import { setRedemptionRequest } from './redemptions/setRedeemRequest'
 import { handleRewardBatch } from './rewards/bulk'
+import { createNewReward } from './rewards/createNewReward'
 import { getRewards } from './rewards/getReward'
 
 export type ApiRoute = {
@@ -58,6 +59,11 @@ export const apiRoutes: ApiRoute[] = [
     pathName: '/api/rewards/bulk',
     method: 'POST',
     handler: handleRewardBatch,
+  },
+  {
+    pathName: '/api/reward/new',
+    method: 'POST',
+    handler: createNewReward,
   },
   {
     pathName: '/api/redemption/request',

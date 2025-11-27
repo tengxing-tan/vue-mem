@@ -29,6 +29,9 @@ const companyId = ref(useCompanyStore().getCompanyId() ?? 0)
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
           <div class="flex items-center gap-4 text-lg text-gray-800">
+            <RouterLink to="/">
+              <span>Home</span>
+            </RouterLink>
             <RouterLink to="/point">
               <span :class="navClass('/point')">🍄Points</span>
             </RouterLink>
