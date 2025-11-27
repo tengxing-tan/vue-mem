@@ -12,6 +12,7 @@ import { setRedemptionRequest } from './redemptions/setRedeemRequest'
 import { handleRewardBatch } from './rewards/bulk'
 import { createNewReward } from './rewards/createNewReward'
 import { getRewards } from './rewards/getReward'
+import { updateReward } from './rewards/updateReward'
 
 export type ApiRoute = {
   pathName: string
@@ -64,6 +65,11 @@ export const apiRoutes: ApiRoute[] = [
     pathName: '/api/reward/new',
     method: 'POST',
     handler: createNewReward,
+  },
+  {
+    pathName: '/api/reward/update',
+    method: 'POST',
+    handler: updateReward,
   },
   {
     pathName: '/api/redemption/request',

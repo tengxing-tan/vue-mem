@@ -26,6 +26,13 @@ onMounted(() => {
 const updateReward = async () => {
   if (!isValid.value) return
   await dbPromise.put(DbObjectStore.Rewards, toRaw(reward.value))
+
+  await fetch('/api/reward/update', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(toRaw(reward.value)),
+  }) // server sync
+
   emit('updateReward', reward.value)
 }
 </script>
