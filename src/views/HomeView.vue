@@ -50,20 +50,20 @@ const backHome = () => {
 </script>
 
 <template>
-  <section class="bg-white">
+  <section class="text-lg">
     <div
       class="flex items-center gap-2 font-sans font-semibold text-md text-zinc-900 border-b-2 border-zinc-200"
     >
       <img src="/img/amigos/amigos-logo.jpg" alt="" class="w-20 h-20 rounded-full" />
       <h1 class="text-zinc-800">Amigos Chinese $ Western Cafe</h1>
     </div>
-    <p v-show="phoneNo" class="p-2 text-sm text-zinc-600 border-b">
+    <p v-show="phoneNo" class="p-2 text-zinc-600 border-b">
       🍄 You have <span class="font-semibold">{{ points }}</span> points.
     </p>
 
     <button
       v-show="!phoneNo"
-      @click="isShowPhoneNo = true"
+      @click="isShowPhoneNo = !isShowPhoneNo"
       class="text-zinc-700 p-2 border-b w-full text-left"
     >
       📱View your points

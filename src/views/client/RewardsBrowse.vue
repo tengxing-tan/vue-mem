@@ -13,12 +13,19 @@ const emit = defineEmits<{
       :key="reward.id"
       class="bg-white border border-zinc-200 p-4 rounded-lg"
     >
-      <div class="block mb-2 max-w-fit" @click="emit('selectItem', reward)">
-        <img
-          :src="reward.imageUrl || '/img/amigos/ckickenchopspaghetti.jpg'"
-          alt=""
-          class="h-48 md:h-56 w-full object-contain md:object-cover"
-        />
+      <div class="mb-2" @click="emit('selectItem', reward)">
+        <div class="h-fit w-full grid place-items-center aspect-square">
+          <img
+            v-if="reward.imageUrl"
+            :src="
+              reward.imageUrl ||
+              'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&amp;fit=crop&amp;q=80&amp;w=1160'
+            "
+            alt=""
+            class="h-48 md:h-56 w-full object-contain md:object-cover"
+          />
+          <i v-else class="ri-gift-line text-zinc-400 text-5xl"></i>
+        </div>
         <p class="h-20 overflow-clip text-zinc-700 text-left text-lg/6 font-semibold font-sans">
           {{ reward.name }}
         </p>

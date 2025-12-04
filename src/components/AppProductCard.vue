@@ -14,10 +14,7 @@ const props = defineProps<{
     <div class="h-fit w-full grid place-items-center bg-gray-100 aspect-square">
       <img
         v-if="props.imgUrl"
-        :src="
-          props.imgUrl ||
-          'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&amp;fit=crop&amp;q=80&amp;w=1160'
-        "
+        :src="props.imgUrl"
         alt=""
         class="w-full h-full object-contain md:object-cover"
       />

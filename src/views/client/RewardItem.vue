@@ -60,19 +60,25 @@ const onRedeem = async () => {
       <p class="text-zinc-700">Please check with counter</p>
     </AppModal>
     <div
-      class="pl-2 align-baseline text-md text-zinc-700 w-max cursor-pointer"
+      class="flex items-center text-md text-zinc-700 w-max cursor-pointer"
       @click="emit('backHome', null)"
     >
-      <i class="ri-arrow-left-s-line"></i> Back home
+      <i class="ri-arrow-left-s-line" style="font-size: 36px"></i>
+      <span>Back home</span>
     </div>
     <PhoneNo
       v-show="isShowPhoneNo"
       @phone-no-found="onPhoneNoFound"
       @close="isShowPhoneNo = false"
     />
-    <div v-show="!isShowPhoneNo" class="overflow-y-scroll pb-28">
-      <img src="/img/amigos/ckickenchopspaghetti.jpg" alt="" class="inset-0 w-full object-cover" />
-      <div class="py-6 px-4">
+    <div v-show="!isShowPhoneNo" class="justify-center overflow-y-scroll pb-28">
+      <img
+        v-show="reward.imageUrl"
+        :src="reward.imageUrl || ''"
+        alt=""
+        class="object-contain md:object-cover inset-0 w-full max-w-xl mx-auto"
+      />
+      <div class="py-6 px-4 w-full max-w-xl mx-auto">
         <h1 class="text-2xl font-semibold font-sans text-zinc-900">{{ props.reward.name }}</h1>
         <p class="text-zinc-500">
           <span class="font-semibold text-zinc-800">{{ props.reward.points }}</span> points
@@ -88,7 +94,7 @@ const onRedeem = async () => {
     >
       <button
         @click="onRedeem"
-        class="w-4/5 bg-amber-600 text-white font-bold font-mono py-3 rounded"
+        class="w-4/5 bg-amber-600 text-white font-bold font-mono py-3 rounded max-w-xl"
         :class="{ 'opacity-60': nonRedeemable }"
         :disabled="nonRedeemable"
       >

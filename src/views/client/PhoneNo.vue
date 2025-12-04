@@ -21,6 +21,7 @@ const cookieSet = ref(false)
 
 const onFind = async () => {
   if (!isPhoneNoValid.value) return
+  resultMessage.value = ''
 
   const member: MemberGet = await findPhoneNo(phoneNo.value)
   if (!member || member.isDeleted) {
