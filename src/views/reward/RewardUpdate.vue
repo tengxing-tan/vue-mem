@@ -7,6 +7,7 @@ import type { RewardModel } from '@/models/reward.model'
 import { onMounted, toRaw } from 'vue'
 import { dbPromise } from '@/services/db'
 import { DbObjectStore } from '@/enums/DbObjectStore'
+import { useApiStore } from '@/composables/useApiStore'
 
 const props = defineProps<{
   rewardData?: RewardModel
@@ -34,6 +35,14 @@ const updateReward = async () => {
   }) // server sync
 
   emit('updateReward', reward.value)
+}
+
+const { postAction } = useApiStore()
+const deleteReward = async (rewardId: number) => {
+  await dbPromise.delete(DbObjectStore.Rewards, rewardId)
+
+  await postAction('/reward/delete', { id: rewardId }) // server sync
+  emit('updateReward', {} as RewardModel)
 }
 </script>
 
@@ -123,7 +132,14 @@ const updateReward = async () => {
           />
         </div>
       </div>
-      <AppButton :bg-color="isValid ? 'green' : 'gray'" @on-click="updateReward">OK</AppButton>
+      <div class="flex gap-4">
+        <AppButton :bg-color="isValid ? 'green' : 'gray'" @on-click="updateReward">OK</AppButton>
+        <AppButton
+          :bg-color="isValid ? 'red' : 'gray'"
+          @on-click="() => deleteReward(Number(reward.id))"
+          >Delete</AppButton
+        >
+      </div>
     </form>
   </section>
 </template>

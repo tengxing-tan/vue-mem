@@ -14,6 +14,7 @@ import { handleRewardBatch } from './rewards/bulk'
 import { createNewReward } from './rewards/createNewReward'
 import { getRewards } from './rewards/getReward'
 import { updateReward } from './rewards/updateReward'
+import { deleteReward as deleteRewardHandler } from './rewards/deleteReward'
 
 export type ApiRoute = {
   pathName: string
@@ -71,6 +72,11 @@ export const apiRoutes: ApiRoute[] = [
     pathName: '/api/reward/update',
     method: 'POST',
     handler: updateReward,
+  },
+  {
+    pathName: '/api/reward/delete',
+    method: 'POST',
+    handler: deleteRewardHandler,
   },
   {
     pathName: '/api/redemption/request',
