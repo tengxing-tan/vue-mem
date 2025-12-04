@@ -21,7 +21,7 @@ const companyId = ref(useCompanyStore().getCompanyId() ?? 0)
         <div class="wrapper">
         <HelloWorld msg="You did it!" /> 
         -->
-  <div v-if="companyId <= 0 && !isActive('/company')">
+  <div v-if="companyId <= 0 && !isActive('/company')" class="bg-white h-dvh">
     <HomeView />
   </div>
   <div v-else class="bg-white h-dvh grid grid-rows-[auto_1fr_auto] font:sans">
