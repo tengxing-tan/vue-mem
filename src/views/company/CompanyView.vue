@@ -3,8 +3,11 @@ import AppButton from '@/components/AppButton.vue'
 import AppFormLabel from '@/components/AppFormLabel.vue'
 import { useApiStore } from '@/composables/useApiStore'
 import { useCompanyStore } from '@/composables/useCompanyStore'
-import router from '@/router'
+import type { MemberModel } from '@/models/member.model'
 import { onMounted, ref } from 'vue'
+import { useMemberStore } from '../member/useMemberStore'
+import type { RewardModel } from '@/models/reward.model'
+import { useRewardStore } from '@/composables/useRewardStore'
 
 type GetCompanyPayload = {
   email: string
@@ -48,9 +51,29 @@ const onSubmit = async (): Promise<void> => {
 
     useCompanyStore().setCompanyEmail(companyEmail.value)
     useCompanyStore().setCompanyId(result.id)
+    await fetchMembers()
+    await fetchRewards()
     uploadResultMsg.value = '👍Login successful! Please refresh page.'
   } catch {
     uploadResultMsg.value = '💤Login failed. Please try again later.'
+  }
+}
+
+const { upsertMember } = useMemberStore()
+const fetchMembers = async () => {
+  const response = await fetch('/api/member/getAll', { method: 'GET' })
+  const fetchedMembers = (await response.json()) as MemberModel[]
+  for (const m of fetchedMembers) {
+    await upsertMember(m, false)
+  }
+}
+
+const { createReward } = useRewardStore()
+const fetchRewards = async () => {
+  const response = await fetch('/api/rewards', { method: 'GET' })
+  const fetchedRewards = (await response.json()) as RewardModel[]
+  for (const r of fetchedRewards) {
+    await createReward(r)
   }
 }
 </script>
@@ -82,10 +105,6 @@ const onSubmit = async (): Promise<void> => {
             :disabled="companyId > 0"
           >
             Login</AppButton
-          >
-
-          <AppButton v-show="uploadResultMsg.length > 0" @on-click="() => router.go(0)"
-            >Refresh</AppButton
           >
         </div>
       </AppFormLabel>

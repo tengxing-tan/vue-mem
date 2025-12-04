@@ -1,5 +1,6 @@
 import { RewardCategory } from '@/enums/RewareCategory'
 import type { RewardModel } from '@/models/reward.model'
+import { create } from '@/services/reward.service'
 import { computed, ref } from 'vue'
 
 export function useRewardStore() {
@@ -17,5 +18,9 @@ export function useRewardStore() {
 
   const isValid = computed(() => validation(reward.value))
 
-  return { reward, isValid }
+  const createReward = async (reward: RewardModel) => {
+    await create(reward)
+  }
+
+  return { reward, isValid, createReward }
 }
