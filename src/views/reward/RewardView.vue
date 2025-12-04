@@ -26,7 +26,9 @@ const fetchRewards = async () => {
     <div class="flex justify-between items-center">
       <h1 class="text-4xl font-bold py-6 text-black">Rewards</h1>
       <div class="space-x-2">
-        <AppButton bgColor="blue" @onClick="fetchRewards">Refresh</AppButton>
+        <button @click="fetchRewards" class="p-4 text-zinc-700 active:underline underline-offset-4">
+          🔃Refresh
+        </button>
         <RouterLink to="/reward/create">
           <AppButton bgColor="yellow">Add Reward</AppButton>
         </RouterLink>
