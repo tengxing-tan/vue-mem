@@ -1,5 +1,6 @@
 import type { Env } from '.'
 import { createCompany } from './companies'
+import { getCompanyId } from './getCompanyId'
 import { handleMemberBatch } from './members/bulk'
 import { createNewMember } from './members/createNewMember'
 import { getAllMembers } from './members/getAllMembers'
@@ -90,5 +91,10 @@ export const apiRoutes: ApiRoute[] = [
     pathName: '/api/company',
     method: 'POST',
     handler: createCompany,
+  },
+  {
+    pathName: '/api/company/id',
+    method: 'POST',
+    handler: getCompanyId,
   },
 ]

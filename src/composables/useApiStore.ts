@@ -1,5 +1,5 @@
 export function useApiStore() {
-  const postAction = async <T>(endpoint: string, body: T) => {
+  const postAction = async <T>(endpoint: string, body: T): Promise<Response> => {
     const base = import.meta.env.VITE_API_BASE || ''
 
     const url = base + '/api' + endpoint
@@ -9,7 +9,7 @@ export function useApiStore() {
       body: JSON.stringify(body),
     })
     if (!res.ok) throw new Error(`Request failed: ${res.status}`)
-    return await res.json()
+    return res
   }
 
   const putAction = async <T>(endpoint: string, body: T) => {

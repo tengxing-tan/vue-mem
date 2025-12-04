@@ -1,14 +1,23 @@
 <script setup lang="ts">
 import AppButton from '@/components/AppButton.vue'
 import AppFormLabel from '@/components/AppFormLabel.vue'
+import { useApiStore } from '@/composables/useApiStore'
 import { useCompanyStore } from '@/composables/useCompanyStore'
-import { useJsonDataStore } from '@/composables/useJsonDataStore'
 import router from '@/router'
 import { onMounted, ref } from 'vue'
+
+type GetCompanyPayload = {
+  email: string
+}
+
+type GetCompanyResponse = {
+  id: number
+}
 
 const companyEmail = ref(useCompanyStore().getCompanyEmail() ?? '')
 const companyId = useCompanyStore().getCompanyId() ?? 0
 const uploadResultMsg = ref('')
+const { postAction } = useApiStore()
 
 onMounted(() => {
   if (companyEmail.value.length > 0) {
@@ -16,7 +25,7 @@ onMounted(() => {
   }
 })
 
-const onClickUpload = async (): Promise<void> => {
+const onSubmit = async (): Promise<void> => {
   if (companyId > 0) {
     return
   }
@@ -28,19 +37,20 @@ const onClickUpload = async (): Promise<void> => {
   }
 
   try {
-    const data = { email: companyEmail.value }
-    const result = await useJsonDataStore().postAction('/api/company', data)
+    const data: GetCompanyPayload = { email: companyEmail.value }
+    const response = await postAction('/company/id', data)
+    const result = (await response.json()) as GetCompanyResponse
 
-    if (isNaN(result.id)) {
-      uploadResultMsg.value = '💤Upload failed. Please try again later.'
+    if (!result || isNaN(result.id)) {
+      uploadResultMsg.value = '💤Not found.'
       return
     }
 
     useCompanyStore().setCompanyEmail(companyEmail.value)
     useCompanyStore().setCompanyId(result.id)
-    uploadResultMsg.value = '👍Upload successful! Please refresh page.'
+    uploadResultMsg.value = '👍Login successful! Please refresh page.'
   } catch {
-    uploadResultMsg.value = '💤Upload failed. Please try again later.'
+    uploadResultMsg.value = '💤Login failed. Please try again later.'
   }
 }
 </script>
@@ -48,7 +58,7 @@ const onClickUpload = async (): Promise<void> => {
 <template>
   <section>
     <h1 class="text-4xl font-bold py-6 text-black">Company</h1>
-    <div class="p-6 my-4 shadow">
+    <form @submit.prevent="onSubmit" class="p-6 my-4 shadow">
       <AppFormLabel label="Company email" labelId="companyEmail">
         <input
           v-model="companyEmail"
@@ -60,7 +70,6 @@ const onClickUpload = async (): Promise<void> => {
         />
 
         <ul class="text-gray-400 text-sm list-disc pl-5 mt-1 mb-6" aria-live="polite">
-          <li>So I can remember who are your members</li>
           <li v-if="uploadResultMsg.length > 0" class="text-base text-gray-600">
             {{ uploadResultMsg }}
           </li>
@@ -70,10 +79,9 @@ const onClickUpload = async (): Promise<void> => {
           <AppButton
             type="submit"
             :bgColor="companyId > 0 ? 'gray' : 'yellow'"
-            @on-click="onClickUpload"
             :disabled="companyId > 0"
           >
-            Upload</AppButton
+            Login</AppButton
           >
 
           <AppButton v-show="uploadResultMsg.length > 0" @on-click="() => router.go(0)"
@@ -81,6 +89,6 @@ const onClickUpload = async (): Promise<void> => {
           >
         </div>
       </AppFormLabel>
-    </div>
+    </form>
   </section>
 </template>
