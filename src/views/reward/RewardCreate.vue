@@ -14,14 +14,13 @@ const createReward = async () => {
 
   const idbRewardId = await create(toRaw(reward.value))
   reward.value.id = Number(idbRewardId)
-  const response = await fetch('/api/reward/new', {
+  await fetch('/api/reward/new', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(toRaw(reward.value)),
   }) // server sync
 
-  const res: { id: number } = await response.json()
-  router.push('/reward/' + res.id)
+  router.push('/reward/' + reward.value.id)
 }
 </script>
 
