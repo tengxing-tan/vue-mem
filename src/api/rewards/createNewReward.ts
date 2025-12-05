@@ -26,14 +26,14 @@ export async function createNewReward(env: Env, request: Request): Promise<Respo
     const placeholders = columns.map((_, i) => `?${i + 1}`).join(', ')
     const rewardId = await db.first<{ id: number }>(
       `INSERT INTO main.rewards (${columns.join(', ')}) VALUES(${placeholders}) RETURNING id`,
-      payload.id,
-      payload.name,
-      payload.points,
-      payload.category,
-      payload.validFrom,
-      payload.validUntil,
-      payload.description,
-      payload.imageUrl,
+      payload.id ?? null,
+      payload.name ?? null,
+      payload.points ?? null,
+      payload.category ?? null,
+      payload.validFrom ?? null,
+      payload.validUntil ?? null,
+      payload.description ?? null,
+      payload.imageUrl ?? null,
     )
 
     return json(env, rewardId, 200)
