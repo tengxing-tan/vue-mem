@@ -37,3 +37,26 @@ export const deleteMember = async (primaryKey: PrimaryKey): Promise<void> => {
 export const getAllMembers = async (count?: number): Promise<DataModel[]> => {
   return await repo.getAll(count)
 }
+
+// Index helpers
+export const getMembersUpdatedSince = async (date: Date, limit?: number): Promise<DataModel[]> => {
+  const range = IDBKeyRange.lowerBound(date, true) // strictly after
+  const results = await repo.getByIndex('updatedAtIdx', range)
+  return typeof limit === 'number' ? results.slice(-limit) : results
+}
+
+export const getMembersBetween = async (
+  start: Date,
+  end: Date,
+  limit?: number,
+): Promise<DataModel[]> => {
+  const range = IDBKeyRange.bound(start, end, true, true) // exclusive bounds
+  const results = await repo.getByIndex('updatedAtIdx', range)
+  return typeof limit === 'number' ? results.slice(0, limit) : results
+}
+
+export const getRecentMembers = async (limit: number): Promise<DataModel[]> => {
+  // Fetch all by index and take last N (assuming ascending order by updatedAt)
+  const results = await repo.getByIndex('updatedAtIdx', IDBKeyRange.lowerBound(new Date(0)))
+  return results.slice(-limit)
+}

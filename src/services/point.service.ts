@@ -34,3 +34,25 @@ export const deletePoint = async (primaryKey: PrimaryKey): Promise<void> => {
 export const getAllPoints = async (): Promise<DataModel[]> => {
   return await repo.getAll()
 }
+
+// Index helpers
+export const getPointsSince = async (date: Date, limit?: number): Promise<DataModel[]> => {
+  const range = IDBKeyRange.lowerBound(date, true)
+  const results = await repo.getByIndex('createdAtIdx', range)
+  return typeof limit === 'number' ? results.slice(-limit) : results
+}
+
+export const getPointsBetween = async (
+  start: Date,
+  end: Date,
+  limit?: number,
+): Promise<DataModel[]> => {
+  const range = IDBKeyRange.bound(start, end, true, true)
+  const results = await repo.getByIndex('createdAtIdx', range)
+  return typeof limit === 'number' ? results.slice(0, limit) : results
+}
+
+export const getRecentPoints = async (limit: number): Promise<DataModel[]> => {
+  const results = await repo.getByIndex('createdAtIdx', IDBKeyRange.lowerBound(new Date(0)))
+  return results.slice(-limit)
+}
