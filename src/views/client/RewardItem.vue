@@ -2,6 +2,8 @@
 import { useMemberPhoneNoStore } from '@/composables/useMemberPhoneNoStore'
 import type { RewardModel } from '@/models/reward.model'
 import { computed, ref } from 'vue'
+import { toast } from '@/services/toast'
+import { logger } from '@/services/logger'
 import PhoneNo from './PhoneNo.vue'
 import AppModal from '@/components/AppModal.vue'
 import { useClientStore } from './useClientStore'
@@ -48,7 +50,14 @@ const onRedeem = async () => {
   const response = await requestRedemption(bodyPayload)
   const result: { id?: string } = await response.json()
   if (!result.id) {
-    alert('Failed to request redeem. Please try again later.')
+    logger.error(
+      'Redeem request failed (no id)',
+      { status: response.status },
+      { module: 'RewardItem' },
+    )
+    toast.error('Failed to request redeem. Please try again later.')
+  } else {
+    toast.success('Redeem requested successfully.')
   }
 
   redeemed.value = true

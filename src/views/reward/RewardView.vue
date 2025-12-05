@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import AppButton from '@/components/AppButton.vue'
 import AppProductCard from '@/components/AppProductCard.vue'
-import { DbObjectStore } from '@/enums/DbObjectStore'
 import type { RewardModel } from '@/models/reward.model'
-import { dbPromise } from '@/services/db'
+import { getAll as getAllRewards } from '@/services/reward.service'
 import { ref } from 'vue'
 
 const showingRewards = ref<RewardModel[]>([])
 
-dbPromise.getAll(DbObjectStore.Rewards).then((rewards: RewardModel[]) => {
+getAllRewards().then((rewards: RewardModel[]) => {
   showingRewards.value = rewards
 })
 

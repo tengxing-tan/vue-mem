@@ -2,9 +2,8 @@
 import AppButton from '@/components/AppButton.vue'
 import AppFormLabel from '@/components/AppFormLabel.vue'
 import { dateFormat } from '@/composables/useAppFormatterStore'
-import { DbObjectStore } from '@/enums/DbObjectStore'
 import type { RewardModel } from '@/models/reward.model'
-import { dbPromise } from '@/services/db'
+import { get as getReward } from '@/services/reward.service'
 import { onMounted, ref } from 'vue'
 import RewardUpdate from './RewardUpdate.vue'
 
@@ -16,7 +15,7 @@ const reward = ref<RewardModel>()
 const isRewardUpdate = ref(false)
 
 onMounted(() => {
-  dbPromise.get(DbObjectStore.Rewards, Number(props.rewardId)).then((rewardData: RewardModel) => {
+  getReward(Number(props.rewardId)).then((rewardData: RewardModel) => {
     reward.value = rewardData
   })
 })

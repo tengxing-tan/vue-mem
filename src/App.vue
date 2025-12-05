@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { computed, ref } from 'vue'
 import { useCompanyStore } from './composables/useCompanyStore'
 import HomeView from './views/HomeView.vue'
+import AppToast from '@/components/AppToast.vue'
 
 const route = useRoute()
 const currentPath = computed(() => route.path)
@@ -52,6 +53,7 @@ const companyId = ref(useCompanyStore().getCompanyId() ?? 0)
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <RouterView />
       </div>
+      <AppToast />
     </div>
     <footer class="border-t border-gray-200">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 text-sm text-gray-700">

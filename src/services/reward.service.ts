@@ -1,31 +1,35 @@
 import type { RewardModel } from '@/models/reward.model'
-import { dbPromise } from './db'
+import { createStoreRepository } from './idb-repo'
+import { toast } from './toast'
+import { logger } from './logger'
 
-const IDB_STORE = 'rewards'
 type PrimaryKey = number
 type DataModel = RewardModel
 
+const repo = createStoreRepository<DataModel, PrimaryKey>('rewards')
+
 export const create = async (data: DataModel): Promise<IDBValidKey | PrimaryKey> => {
-  return await dbPromise.add(IDB_STORE, data)
+  return await repo.add(data)
 }
 
 export const update = async (data: DataModel): Promise<void> => {
   try {
-    await dbPromise.put(IDB_STORE, data)
+    await repo.put(data)
   } catch (error) {
-    console.error('@tengxing: ' + error)
+    logger.error('Failed to update reward', error, { module: 'reward.service' })
+    toast.error('Failed to save reward. Please try again.')
     throw error
   }
 }
 
 export const get = async (primaryKey: PrimaryKey): Promise<DataModel> => {
-  return await dbPromise.get(IDB_STORE, primaryKey)
+  return (await repo.get(primaryKey)) as DataModel
 }
 
 export const getAll = async (count?: number): Promise<DataModel[]> => {
-  return await dbPromise.getAll(IDB_STORE, undefined, count)
+  return await repo.getAll(count)
 }
 
 export const deleteRow = async (primaryKey: PrimaryKey): Promise<void> => {
-  await dbPromise.delete(IDB_STORE, primaryKey)
+  await repo.delete(primaryKey)
 }

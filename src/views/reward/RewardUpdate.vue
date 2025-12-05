@@ -5,8 +5,7 @@ import RewardCategoryOptions from './RewardCategoryOptions.vue'
 import { useRewardStore } from '@/composables/useRewardStore'
 import type { RewardModel } from '@/models/reward.model'
 import { onMounted, toRaw } from 'vue'
-import { dbPromise } from '@/services/db'
-import { DbObjectStore } from '@/enums/DbObjectStore'
+import { update as updateRewardRow, deleteRow as deleteRewardRow } from '@/services/reward.service'
 import { useApiStore } from '@/composables/useApiStore'
 
 const props = defineProps<{
@@ -26,7 +25,7 @@ onMounted(() => {
 
 const updateReward = async () => {
   if (!isValid.value) return
-  await dbPromise.put(DbObjectStore.Rewards, toRaw(reward.value))
+  await updateRewardRow(toRaw(reward.value))
 
   await fetch('/api/reward/update', {
     method: 'POST',
@@ -39,7 +38,7 @@ const updateReward = async () => {
 
 const { postAction } = useApiStore()
 const deleteReward = async (rewardId: number) => {
-  await dbPromise.delete(DbObjectStore.Rewards, rewardId)
+  await deleteRewardRow(rewardId)
 
   await postAction('/reward/delete', { id: rewardId }) // server sync
   emit('updateReward', {} as RewardModel)

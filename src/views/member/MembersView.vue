@@ -4,11 +4,12 @@ import AppButton from '@/components/AppButton.vue'
 import AppTable from '@/components/AppTable.vue'
 import { useMemberStore } from '@/views/member/useMemberStore'
 import { onMounted, ref } from 'vue'
-import { dbPromise } from '@/services/db'
+import { createStoreRepository } from '@/services/idb-repo'
 import AppFormLabel from '@/components/AppFormLabel.vue'
 import type { MemberModel } from '@/models/member.model'
 
 const totalMembers = ref(0)
+const memberRepo = createStoreRepository<MemberModel, string>('members')
 const showingMembers = ref([] as MemberModel[])
 const filter = ref({
   phoneNo: '',
@@ -24,7 +25,7 @@ const routeToMemberRead = (phoneNo: string) => {
 onMounted(async () => {
   await lazyLoadMemberData()
   showingMembers.value = members.value
-  totalMembers.value = (await dbPromise.getAllKeys('members')).length
+  totalMembers.value = await memberRepo.count()
 })
 
 const onPhoneNoChange = async () => {
