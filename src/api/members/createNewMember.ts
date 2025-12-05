@@ -1,5 +1,6 @@
 import type { Env } from '..'
 import type { MemberNew } from '../models/memberNew'
+import { getDb, json, httpError } from '../db'
 
 export async function createNewMember(env: Env, request: Request): Promise<Response> {
   try {
@@ -11,23 +12,18 @@ export async function createNewMember(env: Env, request: Request): Promise<Respo
       })
     }
 
+    const db = getDb(env)
     const columns = ['phoneNo', 'name', 'points']
-    const valuesPlaceholders = columns.map((_, index) => `?${index + 1}`).join(', ')
-    const memberId = await env.D1_VUE_MEM.prepare(
-      `INSERT INTO main.members (${columns.join(', ')})
-     VALUES(${valuesPlaceholders}) RETURNING id`,
+    const placeholders = columns.map((_, i) => `?${i + 1}`).join(', ')
+    const memberId = await db.first<{ id: number }>(
+      `INSERT INTO main.members (${columns.join(', ')}) VALUES(${placeholders}) RETURNING id`,
+      payload.phoneNo,
+      payload.name,
+      payload.points,
     )
-      .bind(payload.phoneNo, payload.name, payload.points)
-      .first<{ id: number }>()
 
-    return new Response(JSON.stringify(memberId), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', ...env.corsHeaders },
-    })
+    return json(env, memberId, 200)
   } catch (e) {
-    return new Response('Error: ' + (e as Error).message, {
-      status: 500,
-      headers: env.corsHeaders,
-    })
+    return httpError(env, (e as Error).message, 500)
   }
 }
