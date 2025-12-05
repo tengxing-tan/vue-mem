@@ -5,6 +5,8 @@ import { initMemberModel } from '@/form-data/initMemberModel'
 import router from '@/router'
 import AppFormLabel from '@/components/AppFormLabel.vue'
 import { ref } from 'vue'
+import { toast } from '@/services/toast'
+import { logger } from '@/services/logger'
 
 const props = defineProps<{ phoneNo: string }>()
 const memberAlreadyExists = ref(false)
@@ -25,8 +27,9 @@ async function onSubmit() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(memberForm.value),
   }) // server sync
-
-  console.log('Created member with ID:', await memberId.text())
+  const idText = await memberId.text()
+  logger.info('Created member on server', { module: 'MemberCreate', meta: { id: idText } })
+  toast.success('Member saved successfully.')
   router.go(-1)
 }
 </script>

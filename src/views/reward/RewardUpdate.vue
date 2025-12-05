@@ -7,6 +7,8 @@ import type { RewardModel } from '@/models/reward.model'
 import { onMounted, toRaw } from 'vue'
 import { update as updateRewardRow, deleteRow as deleteRewardRow } from '@/services/reward.service'
 import { useApiStore } from '@/composables/useApiStore'
+import { toast } from '@/services/toast'
+import { logger } from '@/services/logger'
 
 const props = defineProps<{
   rewardData?: RewardModel
@@ -33,6 +35,8 @@ const updateReward = async () => {
     body: JSON.stringify(toRaw(reward.value)),
   }) // server sync
 
+  toast.success('Reward updated successfully.')
+  logger.info('Reward updated', { module: 'RewardUpdate', meta: { id: reward.value.id } })
   emit('updateReward', reward.value)
 }
 
@@ -41,6 +45,8 @@ const deleteReward = async (rewardId: number) => {
   await deleteRewardRow(rewardId)
 
   await postAction('/reward/delete', { id: rewardId }) // server sync
+  toast.success('Reward deleted.')
+  logger.info('Reward deleted', { module: 'RewardUpdate', meta: { id: rewardId } })
   emit('updateReward', {} as RewardModel)
 }
 </script>
