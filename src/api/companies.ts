@@ -1,4 +1,5 @@
 import type { Env } from '.'
+import { getDb, json, httpError } from './db'
 
 export async function createCompany(env: Env, request: Request): Promise<Response> {
   try {
@@ -10,9 +11,11 @@ export async function createCompany(env: Env, request: Request): Promise<Respons
       })
     }
 
+    const db = getDb(env)
     let results
-    const attempt = await env.D1_VUE_MEM.prepare(
-      `
+    const attempt = await db
+      .prepare(
+        `
       INSERT INTO main.companies (email)
       SELECT ?1
       WHERE NOT EXISTS (
@@ -20,29 +23,21 @@ export async function createCompany(env: Env, request: Request): Promise<Respons
       )
       RETURNING id
     `,
-    )
-      .bind(payload.email)
+        payload.email,
+      )
       .run()
 
     if (attempt.results.length === 0) {
-      const existing = await env.D1_VUE_MEM.prepare(
-        `SELECT id FROM main.companies WHERE email = ?1 LIMIT 1`,
-      )
-        .bind(payload.email)
+      const existing = await db
+        .prepare(`SELECT id FROM main.companies WHERE email = ?1 LIMIT 1`, payload.email)
         .run()
       results = existing.results
     } else {
       results = attempt.results
     }
 
-    return new Response(JSON.stringify(results[0]), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', ...env.corsHeaders },
-    })
+    return json(env, results[0], 200)
   } catch (e) {
-    return new Response('Error: ' + (e as Error).message, {
-      status: 500,
-      headers: env.corsHeaders,
-    })
+    return httpError(env, (e as Error).message, 500)
   }
 }

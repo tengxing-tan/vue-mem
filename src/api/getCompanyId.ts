@@ -1,4 +1,5 @@
 import type { Env } from '.'
+import { getDb, json, httpError } from './db'
 
 type ResquestPayload = {
   email: string
@@ -10,26 +11,20 @@ type ResponsePayload = {
 
 export async function getCompanyId(env: Env, request: Request): Promise<Response> {
   try {
-    if (!request) return new Response()
+    if (!request) return json(env, null, 200)
 
     const payload: ResquestPayload = await request.json()
-    const company = await env.D1_VUE_MEM.prepare(
+    const db = getDb(env)
+    const company = await db.first<ResponsePayload>(
       `SELECT
         id
       FROM main.companies
         WHERE email = ?1 AND verified = 1`,
+      payload.email,
     )
-      .bind(payload.email)
-      .first<ResponsePayload>()
 
-    return new Response(JSON.stringify(company), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', ...env.corsHeaders },
-    })
+    return json(env, company, 200)
   } catch (e) {
-    return new Response('Error: ' + (e as Error).message, {
-      status: 500,
-      headers: env.corsHeaders,
-    })
+    return httpError(env, (e as Error).message, 500)
   }
 }

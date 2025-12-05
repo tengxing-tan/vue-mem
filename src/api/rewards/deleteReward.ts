@@ -1,4 +1,5 @@
 import type { Env } from '..'
+import { getDb, json, httpError } from '../db'
 
 type ResquestPayload = {
   id: number
@@ -16,16 +17,11 @@ export async function deleteReward(env: Env, request: Request): Promise<Response
       })
     }
 
-    await env.D1_VUE_MEM.prepare('DELETE FROM main.rewards WHERE id = ?1').bind(id).first()
+    const db = getDb(env)
+    await db.run('DELETE FROM main.rewards WHERE id = ?1', id)
 
-    return new Response('OK', {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', ...env.corsHeaders },
-    })
+    return json(env, 'OK', 200)
   } catch (e) {
-    return new Response('Error: ' + (e as Error).message, {
-      status: 500,
-      headers: env.corsHeaders,
-    })
+    return httpError(env, (e as Error).message, 500)
   }
 }

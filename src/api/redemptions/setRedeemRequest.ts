@@ -1,5 +1,6 @@
 import type { Env } from '..'
 import type { RedemptionRequestPayload } from '../models/redemptionRequestPayload'
+import { getDb, json, httpError } from '../db'
 
 export async function setRedemptionRequest(env: Env, request: Request): Promise<Response> {
   try {
@@ -11,9 +12,11 @@ export async function setRedemptionRequest(env: Env, request: Request): Promise<
       })
     }
 
-    const member = await env.D1_VUE_MEM.prepare(`SELECT id FROM main.members WHERE phoneNo = ?`)
-      .bind(payload.phoneNo)
-      .first<{ id: number }>()
+    const db = getDb(env)
+    const member = await db.first<{ id: number }>(
+      `SELECT id FROM main.members WHERE phoneNo = ?1`,
+      payload.phoneNo,
+    )
 
     if (!member) {
       return new Response(`@tengxing: member with phoneNo ${payload.phoneNo} not found`, {
@@ -23,22 +26,17 @@ export async function setRedemptionRequest(env: Env, request: Request): Promise<
     }
 
     const columns = ['memberId', 'phoneNo', 'rewardId', 'status']
-    const valuesPlaceholders = columns.map((_, index) => `?${index + 1}`).join(', ')
-    const redemption = await env.D1_VUE_MEM.prepare(
-      `INSERT INTO main.redemptions (${columns.join(', ')})
-     VALUES(${valuesPlaceholders}) RETURNING id`,
+    const placeholders = columns.map((_, i) => `?${i + 1}`).join(', ')
+    const redemption = await db.first<{ id: number }>(
+      `INSERT INTO main.redemptions (${columns.join(', ')}) VALUES(${placeholders}) RETURNING id`,
+      member.id,
+      payload.phoneNo,
+      payload.rewardId,
+      payload.status,
     )
-      .bind(member.id, payload.phoneNo, payload.rewardId, payload.status)
-      .first<{ id: number }>()
 
-    return new Response(JSON.stringify(redemption), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', ...env.corsHeaders },
-    })
+    return json(env, redemption, 200)
   } catch (e) {
-    return new Response('Error: ' + (e as Error).message, {
-      status: 500,
-      headers: env.corsHeaders,
-    })
+    return httpError(env, (e as Error).message, 500)
   }
 }

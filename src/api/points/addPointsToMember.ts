@@ -1,5 +1,6 @@
 import type { Env } from '..'
 import type { PointNew } from '../models/PointNew'
+import { getDb, json, httpError } from '../db'
 
 export async function addPointsToMember(env: Env, request: Request): Promise<Response> {
   try {
@@ -11,35 +12,28 @@ export async function addPointsToMember(env: Env, request: Request): Promise<Res
       })
     }
 
-    const member = await env.D1_VUE_MEM.prepare(`SELECT id FROM main.members WHERE phoneNo = ?`)
-      .bind(payload.phoneNo)
-      .first<{ id: number }>()
+    const db = getDb(env)
+    const member = await db.first<{ id: number }>(
+      `SELECT id FROM main.members WHERE phoneNo = ?1`,
+      payload.phoneNo,
+    )
 
     if (!member) return env.httpNotFound
 
-    await env.D1_VUE_MEM.prepare(
-      `INSERT INTO main.points (memberId, points)
-     VALUES(?, ?)`,
+    await db.run(
+      `INSERT INTO main.points (memberId, points) VALUES(?1, ?2)`,
+      member.id,
+      payload.points,
     )
-      .bind(member.id, payload.points)
-      .first<{ id: number }>()
 
-    await env.D1_VUE_MEM.prepare(
-      `UPDATE main.members
-     SET points = points + ?
-     WHERE id = ?`,
+    await db.run(
+      `UPDATE main.members SET points = points + ?1 WHERE id = ?2`,
+      payload.points,
+      member.id,
     )
-      .bind(payload.points, member.id)
-      .run()
 
-    return new Response(JSON.stringify(member), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', ...env.corsHeaders },
-    })
+    return json(env, member, 200)
   } catch (e) {
-    return new Response('Error: ' + (e as Error).message, {
-      status: 500,
-      headers: env.corsHeaders,
-    })
+    return httpError(env, (e as Error).message, 500)
   }
 }
