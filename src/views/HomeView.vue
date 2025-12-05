@@ -5,6 +5,7 @@ import RewardsBrowse from './client/RewardsBrowse.vue'
 import RewardItem from './client/RewardItem.vue'
 import { useMemberPhoneNoStore } from '@/composables/useMemberPhoneNoStore'
 import PhoneNo from './client/PhoneNo.vue'
+import AppButton from '@/components/AppButton.vue'
 
 const base = import.meta.env.VITE_API_BASE || ''
 const selectItem = ref<RewardModel | null>(null)
@@ -50,29 +51,17 @@ const backHome = () => {
 </script>
 
 <template>
-  <section class="text-lg">
-    <div
-      class="flex items-center gap-2 font-sans font-semibold text-md text-zinc-900 border-b-2 border-zinc-200"
-    >
+  <section class="text-lg h-dvh overflow-auto bg-zinc-50">
+    <div class="flex items-center gap-2 font-sans font-semibold text-md text-zinc-900">
       <img src="/img/amigos/amigos-logo.jpg" alt="" class="w-20 h-20 rounded-full" />
       <h1 class="text-zinc-800">Amigos Chinese $ Western Cafe</h1>
     </div>
-    <p v-show="phoneNo" class="p-2 text-zinc-600 border-b">
+    <p v-show="phoneNo" class="text-zinc-600 my-6 ml-4 px-4 py-1 bg-slate-100 rounded-full w-fit">
       🍄 You have <span class="font-semibold">{{ points }}</span> points.
     </p>
-
-    <button
-      v-show="!phoneNo"
-      @click="isShowPhoneNo = !isShowPhoneNo"
-      class="text-zinc-700 p-2 border-b w-full text-left"
-    >
-      📱View your points
-    </button>
-    <PhoneNo
-      v-show="isShowPhoneNo"
-      @phone-no-found="onPhoneNoFound"
-      @close="isShowPhoneNo = false"
-    />
+    <div v-show="isShowPhoneNo" class="absolute bg-white z-10 top-1/12 h-full">
+      <PhoneNo @phone-no-found="onPhoneNoFound" @close="isShowPhoneNo = false" />
+    </div>
     <RewardItem
       v-if="selectItem"
       :reward="selectItem"
@@ -80,6 +69,15 @@ const backHome = () => {
       @back-home="backHome"
       class="my-6"
     />
-    <RewardsBrowse v-else :rewards="rewards" @select-item="selectItem = $event" />
+    <div v-else>
+      <div class="px-4 pb-4 flex items-center justify-between">
+        <h1 class="text-4xl font-light text-zinc-700">Rewards</h1>
+
+        <AppButton bg-color="green" v-show="!phoneNo" @click="isShowPhoneNo = !isShowPhoneNo">
+          Login
+        </AppButton>
+      </div>
+      <RewardsBrowse :rewards="rewards" @select-item="selectItem = $event" />
+    </div>
   </section>
 </template>

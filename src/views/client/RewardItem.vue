@@ -6,6 +6,7 @@ import PhoneNo from './PhoneNo.vue'
 import AppModal from '@/components/AppModal.vue'
 import { useClientStore } from './useClientStore'
 import { RedemptionStatus } from '@/enums/RedemptionStatus'
+import AppButton from '@/components/AppButton.vue'
 
 const props = defineProps<{ reward: RewardModel; memberPoints: number }>()
 const emit = defineEmits<{
@@ -55,33 +56,42 @@ const onRedeem = async () => {
 </script>
 
 <template>
-  <div class="bg-white">
+  <div class="h-full">
     <AppModal v-show="redeemed" title=" Sent redeem request ✅ " @ok="redeemed = false">
       <p class="text-zinc-700">Please check with counter</p>
     </AppModal>
+
+    <!-- Back button -->
     <div
-      class="flex items-center text-md text-zinc-700 w-max cursor-pointer"
+      class="pt-4 flex items-center text-md text-zinc-700 w-max cursor-pointer"
       @click="emit('backHome', null)"
     >
       <i class="ri-arrow-left-s-line" style="font-size: 36px"></i>
-      <span>Back home</span>
+      <span class="pb-px">Back home</span>
     </div>
+
+    <!-- Phone number input -->
     <PhoneNo
       v-show="isShowPhoneNo"
       @phone-no-found="onPhoneNoFound"
       @close="isShowPhoneNo = false"
     />
-    <div v-show="!isShowPhoneNo" class="justify-center overflow-y-scroll pb-28">
+
+    <!-- Reward details -->
+    <div
+      v-show="!isShowPhoneNo"
+      class="flex flex-col justify-center overflow-y-scroll p-4 pb-28 bg-white rounded-md shadow m-4"
+    >
       <img
         v-show="reward.imageUrl"
         :src="reward.imageUrl || ''"
         alt=""
         class="object-contain md:object-cover inset-0 w-full max-w-xl mx-auto"
       />
-      <div class="py-6 px-4 w-full max-w-xl mx-auto">
+      <div class="w-full max-w-xl mx-auto">
         <h1 class="text-2xl font-semibold font-sans text-zinc-900">{{ props.reward.name }}</h1>
-        <p class="text-zinc-500">
-          <span class="font-semibold text-zinc-800">{{ props.reward.points }}</span> points
+        <p class="text-left text-base text-zinc-700">
+          Point: <span class="font-semibold text-zinc-700">{{ reward.points }}</span>
         </p>
         <p class="text-zinc-700 pt-6">
           {{ props.reward.description }}
@@ -89,17 +99,8 @@ const onRedeem = async () => {
       </div>
     </div>
 
-    <div
-      class="w-full flex justify-center fixed bottom-0 left-0 bg-white pt-2 pb-6 border-t border-zinc-200"
-    >
-      <button
-        @click="onRedeem"
-        class="w-4/5 bg-amber-600 text-white font-bold font-mono py-3 rounded max-w-xl"
-        :class="{ 'opacity-60': nonRedeemable }"
-        :disabled="nonRedeemable"
-      >
-        REQUEST REDEEM
-      </button>
+    <div class="w-full flex justify-center fixed bottom-0 left-0 bg-white py-6">
+      <AppButton bg-color="orange" @click="onRedeem">REQUEST REDEEM</AppButton>
     </div>
   </div>
 </template>
