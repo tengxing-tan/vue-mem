@@ -59,3 +59,9 @@ rm -rf node_modules && rm package-lock.json && npm install && npm run build
 ```sh
 npx wrangler d1 execute d1-vue-mem --remote --file=./migrations/members.sql
 ```
+
+### Hidden route
+
+```
+To showcase the usage of indexed DB indexing: http://localhost:5173/members/recent
+```

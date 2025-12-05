@@ -6,6 +6,12 @@ export const memberRoutes = [
     component: () => import('@/views/member/MembersView.vue'),
   },
   {
+    path: '/members/recent',
+    name: 'membersRecent',
+    meta: { title: 'Recent Members' },
+    component: () => import('@/views/member/RecentMembers.vue'),
+  },
+  {
     path: '/member/read/:phoneNo',
     name: 'memberRead',
     meta: { title: 'Read Member' },
